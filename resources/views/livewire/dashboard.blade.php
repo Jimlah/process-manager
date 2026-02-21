@@ -24,37 +24,44 @@
             @endif
         </div>
 
-        <!-- Theme Toggle -->
-        <div class="border-t border-border p-3" x-data="themeToggle()" x-init="init()">
-            <div class="flex items-center justify-between">
-                <span class="text-xs font-bold text-muted-foreground uppercase tracking-wider">THEME</span>
-                <div class="flex items-center gap-0.5 border border-border bg-background p-0.5">
-                    <button
-                        @click="set('light')"
-                        :class="theme === 'light' ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:text-foreground'"
-                        class="p-1.5 transition-colors"
-                        title="Light Mode"
-                    >
-                        <x-icon name="sun" class="w-3.5 h-3.5" />
-                    </button>
-                    <button
-                        @click="set('dark')"
-                        :class="theme === 'dark' ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:text-foreground'"
-                        class="p-1.5 transition-colors"
-                        title="Dark Mode"
-                    >
-                        <x-icon name="moon" class="w-3.5 h-3.5" />
-                    </button>
-                    <button
-                        @click="set('system')"
-                        :class="theme === 'system' ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:text-foreground'"
-                        class="p-1.5 transition-colors"
-                        title="System"
-                    >
-                        <x-icon name="monitor" class="w-3.5 h-3.5" />
-                    </button>
+        <!-- Theme Toggle & Settings -->
+        <div class="border-t border-border p-3 space-y-2">
+            <div x-data="themeToggle()" x-init="init()">
+                <div class="flex items-center justify-between">
+                    <span class="text-xs font-bold text-muted-foreground uppercase tracking-wider">THEME</span>
+                    <div class="flex items-center gap-0.5 border border-border bg-background p-0.5">
+                        <button
+                            @click="set('light')"
+                            :class="theme === 'light' ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:text-foreground'"
+                            class="p-1.5 transition-colors"
+                            title="Light Mode"
+                        >
+                            <x-icon name="sun" class="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                            @click="set('dark')"
+                            :class="theme === 'dark' ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:text-foreground'"
+                            class="p-1.5 transition-colors"
+                            title="Dark Mode"
+                        >
+                            <x-icon name="moon" class="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                            @click="set('system')"
+                            :class="theme === 'system' ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:text-foreground'"
+                            class="p-1.5 transition-colors"
+                            title="System"
+                        >
+                            <x-icon name="monitor" class="w-3.5 h-3.5" />
+                        </button>
+                    </div>
                 </div>
             </div>
+            
+            <a href="/settings" class="flex items-center justify-between py-2 text-xs font-bold text-muted-foreground uppercase tracking-wider hover:text-primary transition-colors cursor-pointer">
+                <span>Settings</span>
+                <x-icon name="settings" class="w-3.5 h-3.5" />
+            </a>
         </div>
     </aside>
 
