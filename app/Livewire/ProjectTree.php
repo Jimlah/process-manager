@@ -42,6 +42,16 @@ class ProjectTree extends Component
         $this->dispatch('open-command-modal', projectId: $this->project->id);
     }
 
+    public function editProject(): void
+    {
+        $this->dispatch('open-edit-project-modal', projectId: $this->project->id);
+    }
+
+    public function editCommand(int $commandId): void
+    {
+        $this->dispatch('open-edit-command-modal', commandId: $commandId);
+    }
+
     #[On('process-status-changed')]
     public function refreshCommands(): void
     {

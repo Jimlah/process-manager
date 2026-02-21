@@ -83,75 +83,8 @@
     </main>
 
     <!-- Project Modal -->
-    <x-modal :show="$showProjectModal" title="NEW PROJECT" wire:click.self="closeProjectModal">
-        <x-slot:close>
-            <button type="button" class="text-muted-foreground hover:text-foreground transition-colors"
-                wire:click="closeProjectModal">
-                <x-icon name="plus" class="w-4 h-4 rotate-45" />
-            </button>
-        </x-slot:close>
-
-        <div class="space-y-4">
-            <div>
-                <label class="block text-xs font-bold text-muted-foreground mb-1 uppercase tracking-wider">Project
-                    Name</label>
-                <x-input wire:model="projectName" placeholder="e.g., eClinic" />
-                @error('projectName')<span class="text-destructive text-xs mt-1 block">{{ $message }}</span>@enderror
-            </div>
-
-            <div>
-                <label class="block text-xs font-bold text-muted-foreground mb-1 uppercase tracking-wider">Project
-                    Path</label>
-                <div class="flex gap-2">
-                    <x-input wire:model="projectPath" placeholder="/Users/{{ get_current_user() }}/Projects/eclinic" />
-                    <x-button variant="outline" wire:click="selectProjectPath">Browse</x-button>
-                </div>
-                @error('projectPath')<span class="text-destructive text-xs mt-1 block">{{ $message }}</span>@enderror
-            </div>
-        </div>
-
-        <div class="flex items-center justify-end gap-3 mt-6 pt-4 border-t border-border">
-            <x-button variant="ghost" wire:click="closeProjectModal">Cancel</x-button>
-            <x-button wire:click="saveProject">Create Project</x-button>
-        </div>
-    </x-modal>
+    <livewire:project-modal />
 
     <!-- Command Modal -->
-    <x-modal :show="$showCommandModal" title="NEW COMMAND" wire:click.self="closeCommandModal">
-        <x-slot:close>
-            <button type="button" class="text-muted-foreground hover:text-foreground transition-colors"
-                wire:click="closeCommandModal">
-                <x-icon name="plus" class="w-4 h-4 rotate-45" />
-            </button>
-        </x-slot:close>
-
-        @if($commandModalProjectId)
-            <p class="text-xs text-muted-foreground mb-4">
-                Target: <span class="text-primary">{{ App\Models\Project::find($commandModalProjectId)?->name }}</span>
-            </p>
-        @endif
-
-        <div class="space-y-4">
-            <div>
-                <label class="block text-xs font-bold text-muted-foreground mb-1 uppercase tracking-wider">Command
-                    Name</label>
-                <x-input wire:model="commandName" placeholder="e.g., Vite Dev Server" />
-                @error('commandName')<span class="text-destructive text-xs mt-1 block">{{ $message }}</span>@enderror
-            </div>
-
-            <div>
-                <label
-                    class="block text-xs font-bold text-muted-foreground mb-1 uppercase tracking-wider">Command</label>
-                <textarea wire:model="commandText" rows="3"
-                    class="flex w-full bg-background px-3 py-2 text-sm shadow-sm transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring border border-input resize-none"
-                    placeholder="npm run dev"></textarea>
-                @error('commandText')<span class="text-destructive text-xs mt-1 block">{{ $message }}</span>@enderror
-            </div>
-        </div>
-
-        <div class="flex items-center justify-end gap-3 mt-6 pt-4 border-t border-border">
-            <x-button variant="ghost" wire:click="closeCommandModal">Cancel</x-button>
-            <x-button wire:click="saveCommand">Create Command</x-button>
-        </div>
-    </x-modal>
+    <livewire:command-modal />
 </div>

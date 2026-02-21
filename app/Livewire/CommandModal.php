@@ -6,6 +6,7 @@ use App\Models\Command;
 use App\Models\Project;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Str;
+use Livewire\Attributes\On;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
 
@@ -27,6 +28,27 @@ class CommandModal extends Component
     {
         $this->show = $show;
         $this->projectId = $projectId;
+    }
+
+    #[On('open-command-modal')]
+    public function openForCreate(int $projectId): void
+    {
+        $this->reset(['name', 'commandText', 'command']);
+        $this->projectId = $projectId;
+        $this->resetErrorBag();
+        $this->show = true;
+    }
+
+    #[On('open-edit-command-modal')]
+    public function openForEdit(int $commandId): void
+    {
+        $command = Command::findOrFail($commandId);
+        $this->command = $command;
+        $this->projectId = $command->project_id;
+        $this->name = $command->name;
+        $this->commandText = $command->command;
+        $this->resetErrorBag();
+        $this->show = true;
     }
 
     public function updatedShow(bool $value): void

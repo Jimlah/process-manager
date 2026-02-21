@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use App\Models\Project;
 use Illuminate\Contracts\View\View;
+use Livewire\Attributes\On;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
 
@@ -22,6 +23,24 @@ class ProjectModal extends Component
     public function mount(bool $show = false): void
     {
         $this->show = $show;
+    }
+
+    #[On('open-project-modal')]
+    public function openForCreate(): void
+    {
+        $this->reset(['name', 'path', 'project']);
+        $this->resetErrorBag();
+        $this->show = true;
+    }
+
+    #[On('open-edit-project-modal')]
+    public function openForEdit(int $projectId): void
+    {
+        $this->project = Project::findOrFail($projectId);
+        $this->name = $this->project->name;
+        $this->path = $this->project->path;
+        $this->resetErrorBag();
+        $this->show = true;
     }
 
     public function updatedShow(bool $value): void
