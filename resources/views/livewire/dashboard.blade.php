@@ -25,8 +25,7 @@
                 @endfor
             @else
                 @foreach($this->projects as $project)
-                    <livewire:project-tree :project="$project" :selected-command-id="$selectedCommandId"
-                        :key="'project-' . $project->id" />
+                    <livewire:project-tree :project="$project" :selected-command-id="$selectedCommandId" :key="'project-' . $project->id" />
                 @endforeach
                 @if($this->projects->isEmpty())
                     <div class="text-xs text-muted-foreground p-4 text-center">No projects configured.</div>
