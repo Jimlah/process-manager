@@ -15,56 +15,54 @@
                     <span class="w-1.5 h-1.5 rounded-full bg-success"></span>
                     RUNNING
                 </x-badge>
-                <x-button variant="destructive" size="sm" wire:click="stop" wire:loading.attr="disabled"
-                    class="gap-1.5 px-3">
-                    <x-icon name="stop" class="w-3.5 h-3.5" />
-                    STOP
-                </x-button>
+                <x-tooltip text="Stop Process">
+                    <x-button variant="destructive" size="sm" wire:click="stop" wire:loading.attr="disabled"
+                        class="gap-1.5 px-3">
+                        <x-icon name="stop" class="w-3.5 h-3.5" />
+                        STOP
+                    </x-button>
+                </x-tooltip>
             @else
                 <x-badge variant="secondary" class="flex items-center gap-1.5 px-2">
                     <span class="w-1.5 h-1.5 rounded-full bg-muted-foreground"></span>
                     STOPPED
                 </x-badge>
-                <x-button variant="success" size="sm" wire:click="start" wire:loading.attr="disabled" class="gap-1.5 px-3">
-                    <x-icon name="play" class="w-3.5 h-3.5" />
-                    START
-                </x-button>
+                <x-tooltip text="Start Process">
+                    <x-button variant="success" size="sm" wire:click="start" wire:loading.attr="disabled"
+                        class="gap-1.5 px-3">
+                        <x-icon name="play" class="w-3.5 h-3.5" />
+                        START
+                    </x-button>
+                </x-tooltip>
             @endif
 
             <div class="w-px h-6 bg-border mx-1"></div>
 
-            <x-button variant="outline" size="sm" wire:click="toggleAutoStart"
-                class="gap-1.5 px-3 {{ $command->auto_start ? 'text-primary bg-primary/5 border-primary/30' : 'text-muted-foreground' }}"
-                title="Toggle Auto-Start">
-                <x-icon name="power" class="w-3.5 h-3.5" />
-                <x-tooltip text="Toggle Auto-Start">
-                    <x-button variant="outline" size="sm" wire:click="toggleAutoStart"
-                        class="gap-1.5 px-3 {{ $command->auto_start ? 'text-primary bg-primary/5 border-primary/30' : 'text-muted-foreground' }}"
-                        title="Toggle Auto-Start">
-                        <x-icon name="power" class="w-3.5 h-3.5" />
-                        <span class="text-[10px] uppercase font-bold tracking-widest hidden sm:inline">Auto-Start</span>
-                    </x-button>
-                </x-tooltip>
+            <x-tooltip text="Run automatically on startup">
+                <x-button variant="outline" size="sm" wire:click="toggleAutoStart"
+                    class="gap-1.5 px-3 {{ $command->auto_start ? 'text-primary bg-primary/5 border-primary/30' : 'text-muted-foreground' }}">
+                    <x-icon name="power" class="w-3.5 h-3.5" />
+                    <span class="text-[10px] uppercase font-bold tracking-widest hidden sm:inline">Auto-Start</span>
+                </x-button>
+            </x-tooltip>
 
-                <x-tooltip text="Toggle Auto-Restart">
-                    <x-button variant="outline" size="sm" wire:click="toggleAutoRestart"
-                        class="gap-1.5 px-3 {{ $command->auto_restart ? 'text-primary bg-primary/5 border-primary/30' : 'text-muted-foreground' }}"
-                        title="Toggle Auto-Restart">
-                        <x-icon name="refresh" class="w-3.5 h-3.5" />
-                        <span
-                            class="text-[10px] uppercase font-bold tracking-widest hidden sm:inline">Auto-Restart</span>
-                    </x-button>
-                </x-tooltip>
+            <x-tooltip text="Automatically restart if process exits">
+                <x-button variant="outline" size="sm" wire:click="toggleAutoRestart"
+                    class="gap-1.5 px-3 {{ $command->auto_restart ? 'text-primary bg-primary/5 border-primary/30' : 'text-muted-foreground' }}">
+                    <x-icon name="refresh" class="w-3.5 h-3.5" />
+                    <span class="text-[10px] uppercase font-bold tracking-widest hidden sm:inline">Auto-Restart</span>
+                </x-button>
+            </x-tooltip>
 
-                <div class="w-px h-6 bg-border mx-1"></div>
+            <div class="w-px h-6 bg-border mx-1"></div>
 
-                <x-tooltip text="Clear Logs">
-                    <x-button variant="outline" size="sm" wire:click="clearLogs"
-                        class="gap-1.5 px-3 uppercase text-[10px] font-bold tracking-widest">
-                        <x-icon name="trash" class="w-3.5 h-3.5" />
-                        CLEAR
-                    </x-button>
-                </x-tooltip>
+            <x-tooltip text="Clear terminal logs">
+                <x-button variant="outline" size="sm" wire:click="clearLogs"
+                    class="gap-1.5 px-3 uppercase text-[10px] font-bold tracking-widest">
+                    <x-icon name="trash" class="w-3.5 h-3.5" />
+                    CLEAR
+                </x-button>
+            </x-tooltip>
         </div>
     </div>
 
