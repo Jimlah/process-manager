@@ -16,7 +16,7 @@ class CommandModal extends Component
 
     public ?int $projectId = null;
 
-    public ?Command $command = null;
+    public ?int $editingCommandId = null;
 
     #[Validate('required|string|max:255')]
     public string $name = '';
@@ -33,7 +33,7 @@ class CommandModal extends Component
     #[On('open-command-modal')]
     public function openForCreate(int $projectId): void
     {
-        $this->reset(['name', 'commandText', 'command']);
+        $this->reset(['name', 'commandText', 'editingCommandId']);
         $this->projectId = $projectId;
         $this->resetErrorBag();
         $this->show = true;
@@ -43,7 +43,7 @@ class CommandModal extends Component
     public function openForEdit(int $commandId): void
     {
         $command = Command::findOrFail($commandId);
-        $this->command = $command;
+        $this->editingCommandId = $command->id;
         $this->projectId = $command->project_id;
         $this->name = $command->name;
         $this->commandText = $command->command;
@@ -62,8 +62,8 @@ class CommandModal extends Component
     {
         $this->validate();
 
-        if ($this->command) {
-            $this->command->update([
+        if ($this->editingCommandId) {
+            Command::findOrFail($this->editingCommandId)->update([
                 'name' => $this->name,
                 'command' => $this->commandText,
             ]);
@@ -79,23 +79,26 @@ class CommandModal extends Component
             ]);
         }
 
-        $this->reset(['name', 'commandText', 'command', 'projectId']);
+        $this->reset(['name', 'commandText', 'editingCommandId', 'projectId']);
+        $this->show = false;
         $this->dispatch('close-command-modal');
     }
 
     public function delete(): void
     {
-        if ($this->command) {
-            $this->command->delete();
+        if ($this->editingCommandId) {
+            Command::findOrFail($this->editingCommandId)->delete();
         }
 
-        $this->reset(['name', 'commandText', 'command', 'projectId']);
+        $this->reset(['name', 'commandText', 'editingCommandId', 'projectId']);
+        $this->show = false;
         $this->dispatch('close-command-modal');
     }
 
     public function cancel(): void
     {
-        $this->reset(['name', 'commandText', 'command', 'projectId']);
+        $this->reset(['name', 'commandText', 'editingCommandId', 'projectId']);
+        $this->show = false;
         $this->dispatch('close-command-modal');
     }
 

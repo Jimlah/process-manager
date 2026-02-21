@@ -67,6 +67,7 @@ class ProjectModal extends Component
         }
 
         $this->reset(['name', 'path', 'project']);
+        $this->show = false;
         $this->dispatch('close-project-modal');
     }
 
@@ -77,12 +78,14 @@ class ProjectModal extends Component
         }
 
         $this->reset(['name', 'path', 'project']);
+        $this->show = false;
         $this->dispatch('close-project-modal');
     }
 
     public function cancel(): void
     {
         $this->reset(['name', 'path', 'project']);
+        $this->show = false;
         $this->dispatch('close-project-modal');
     }
 
