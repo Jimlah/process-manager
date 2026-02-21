@@ -20,13 +20,15 @@ class LogChildProcessMessage
 
         $processLog = $command->processLog;
 
+        $data = str_ends_with($event->data, "\n") ? $event->data : $event->data."\n";
+
         if ($processLog) {
             $processLog->update([
-                'content' => $processLog->content.$event->data,
+                'content' => $processLog->content.$data,
             ]);
         } else {
             $command->processLog()->create([
-                'content' => $event->data,
+                'content' => $data,
             ]);
         }
     }

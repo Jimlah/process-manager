@@ -35,6 +35,8 @@ class ProcessRunner extends Component
             return;
         }
 
+        $data = str_ends_with($data, "\n") ? $data : $data."\n";
+
         $html = $this->convertAnsiToHtml($data);
 
         $this->logs .= $html;
@@ -47,8 +49,9 @@ class ProcessRunner extends Component
     }
 
     private function convertAnsiToHtml(string $text): string
-    {  
-        $converter = new \SensioLabs\AnsiConverter\AnsiToHtmlConverter();
+    {
+        $converter = new \SensioLabs\AnsiConverter\AnsiToHtmlConverter;
+
         return $converter->convert($text);
     }
 
