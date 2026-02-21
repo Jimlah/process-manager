@@ -117,6 +117,12 @@ class Dashboard extends Component
         $this->closeCommandModal();
     }
 
+    #[On('process-status-changed')]
+    public function refreshData(): void
+    {
+        // Triggers re-render so computed properties update
+    }
+
     public function getRunningCommandsProperty(): Collection
     {
         return Command::where('status', 'running')->with('project')->get();

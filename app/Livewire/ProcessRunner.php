@@ -76,6 +76,8 @@ class ProcessRunner extends Component
 
         $this->command->refresh();
         $this->command->update(['status' => 'stopped']);
+
+        $this->dispatch('process-status-changed');
     }
 
     public function start(): void
@@ -91,11 +93,15 @@ class ProcessRunner extends Component
         );
 
         $this->command->update(['status' => 'running']);
+
+        $this->dispatch('process-status-changed');
     }
 
     public function stop(): void
     {
         $this->command->update(['status' => 'stopped']);
+
+        $this->dispatch('process-status-changed');
 
         $alias = $this->command->alias;
 

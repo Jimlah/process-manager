@@ -5,7 +5,9 @@ namespace App\Livewire;
 use App\Models\Command;
 use App\Models\Project;
 use Illuminate\Contracts\View\View;
+use Livewire\Attributes\On;
 use Livewire\Component;
+use Native\Desktop\Facades\ChildProcess;
 
 class ProjectTree extends Component
 {
@@ -38,6 +40,49 @@ class ProjectTree extends Component
     public function addCommand(): void
     {
         $this->dispatch('open-command-modal', projectId: $this->project->id);
+    }
+
+    #[On('process-status-changed')]
+    public function refreshCommands(): void
+    {
+        $this->project->load('commands');
+    }
+
+    public function startCommand(int $commandId): void
+    {
+        $command = $this->project->commands->find($commandId);
+
+        if (! $command) {
+            return;
+        }
+
+        $command->processLog?->update(['content' => '']);
+
+        ChildProcess::start(
+            cmd: $command->command,
+            alias: $command->alias,
+            cwd: $command->project->path,
+            env: [],
+        );
+
+        $command->update(['status' => 'running']);
+
+        $this->dispatch('process-status-changed');
+    }
+
+    public function stopCommand(int $commandId): void
+    {
+        $command = $this->project->commands->find($commandId);
+
+        if (! $command) {
+            return;
+        }
+
+        $command->update(['status' => 'stopped']);
+
+        ChildProcess::stop($command->alias);
+
+        $this->dispatch('process-status-changed');
     }
 
     public function getRunningCountProperty(): int
