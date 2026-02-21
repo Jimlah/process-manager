@@ -11,14 +11,17 @@
             <div>
                 <label class="block text-xs font-bold text-muted-foreground mb-1 uppercase tracking-wider">Project
                     Name</label>
-                <x-input wire:model="name" placeholder="e.g., eClinic" />
+                <x-input wire:model="name" placeholder="signal" />
                 @error('name')<span class="text-destructive text-xs mt-1 block">{{ $message }}</span>@enderror
             </div>
 
             <div>
                 <label class="block text-xs font-bold text-muted-foreground mb-1 uppercase tracking-wider">Project
                     Path</label>
-                <x-input wire:model="path" placeholder="/Users/{{ get_current_user() }}/Projects/eclinic" />
+                <div class="flex items-center gap-2">
+                    <x-input wire:model="path" placeholder="path to signal" readonly class="flex-1" />
+                    <x-button variant="secondary" wire:click="browse">Browse</x-button>
+                </div>
                 @error('path')<span class="text-destructive text-xs mt-1 block">{{ $message }}</span>@enderror
             </div>
         </div>

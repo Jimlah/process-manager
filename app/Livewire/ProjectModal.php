@@ -7,6 +7,7 @@ use Illuminate\Contracts\View\View;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
+use Native\Desktop\Dialog;
 use Native\Desktop\Facades\Notification;
 
 class ProjectModal extends Component
@@ -101,6 +102,17 @@ class ProjectModal extends Component
         $this->reset(['name', 'path', 'project']);
         $this->show = false;
         $this->dispatch('close-project-modal');
+    }
+
+    public function browse(): void
+    {
+        $path = Dialog::new()
+            ->folders()
+            ->open();
+
+        if ($path) {
+            $this->path = $path;
+        }
     }
 
     public function render(): View
