@@ -33,26 +33,25 @@
             @foreach($project->commands as $command)
                 <div wire:key="cmd-{{ $command->id }}" class="flex items-center group/cmd">
                     <button wire:click="selectCommand({{ $command->id }})"
-                        class="flex-1 flex items-center gap-2 py-1 px-2 text-xs text-left transition-all border-l-2 min-w-0
-                                               {{ $selectedCommandId === $command->id
+                        class=" flex items-center gap-2 py-1 px-2 text-xs text-left transition-all border-l-2 min-w-0
+                                                                                                                                                                                                                                                                       {{ $selectedCommandId === $command->id
                     ? 'border-primary bg-primary/10 text-primary font-bold' : 'border-transparent text-muted-foreground hover:bg-accent hover:text-foreground' }}">
                         <span class="text-muted-foreground opacity-50 select-none mr-1">|--</span>
-                        @if($command->status === 'running')
-                            <button wire:click.stop="stopCommand({{ $command->id }})"
-                                class="p-0.5 hover:bg-destructive/20 rounded transition-colors shrink-0" title="Stop process">
-                                <x-icon name="stop" class="w-3 h-3 text-success" />
-                            </button>
-                        @else
-                            <button wire:click.stop="startCommand({{ $command->id }})"
-                                class="p-0.5 hover:bg-success/20 rounded transition-colors shrink-0" title="Start process">
-                                <x-icon name="play" class="w-3 h-3 text-muted-foreground" />
-                            </button>
-                        @endif
                         <span class="truncate flex-1 font-mono">{{ $command->name }}</span>
                     </button>
+                    @if($command->status === 'running')
+                        <button wire:click.stop="stopCommand({{ $command->id }})"
+                            class="p-0.5 hover:bg-destructive/20 rounded transition-colors shrink-0" title="Stop process">
+                            <x-icon name="stop" class="w-3 h-3 text-success" />
+                        </button>
+                    @else
+                        <button wire:click.stop="startCommand({{ $command->id }})"
+                            class="p-0.5 hover:bg-success/20 rounded transition-colors shrink-0" title="Start process">
+                            <x-icon name="play" class="w-3 h-3 text-muted-foreground" />
+                        </button>
+                    @endif
                     <button wire:click.stop="editCommand({{ $command->id }})"
-                        class="opacity-0 group-hover/cmd:opacity-100 p-1 hover:bg-accent text-muted-foreground hover:text-foreground transition-all shrink-0 mr-1"
-                        title="Edit Command">
+                        class="opacity-100 p-1 bg-accent text-foreground transition-all shrink-0 mr-1" title="Edit Command">
                         <x-icon name="pencil" class="w-3 h-3" />
                     </button>
                 </div>
