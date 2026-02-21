@@ -18,25 +18,16 @@ class LogChildProcessMessage
             return;
         }
 
-        $html = $this->convertAnsiToHtml($event->data);
-
         $processLog = $command->processLog;
 
         if ($processLog) {
             $processLog->update([
-                'content' => $processLog->content.$html,
+                'content' => $processLog->content.$event->data,
             ]);
         } else {
             $command->processLog()->create([
-                'content' => $html,
+                'content' => $event->data,
             ]);
         }
-    }
-
-    private function convertAnsiToHtml(string $text): string
-    {
-        $converter = new \SensioLabs\AnsiConverter\AnsiToHtmlConverter();
-        
-        return $converter->convert($text);
     }
 }
