@@ -3,8 +3,7 @@
     <aside class="w-72 bg-card border-r border-border flex flex-col shrink-0 overflow-hidden">
         <div class="p-4 border-b border-border flex items-center justify-between">
             <div class="flex items-center gap-2">
-                <img src="/images/logo.png" alt="SIGNAL" class="w-6 h-6 object-contain" />
-                <h2 class="font-black text-foreground tracking-tighter text-lg -ml-1">
+                <h2 class="font-black text-foreground tracking-tighter text-lg">
                     SIGNAL
                 </h2>
             </div>
@@ -73,10 +72,26 @@
         @if($this->selectedCommand)
             <livewire:process-runner :command="$this->selectedCommand" :key="'runner-' . $selectedCommandId" />
         @else
-            <div class="flex-1 flex items-center justify-center text-muted-foreground">
-                <div class="text-center flex flex-col items-center">
-                    <p class="text-lg font-black tracking-tighter text-foreground/30 italic">INITIALIZING SIGNAL...</p>
-                    <p class="text-xs font-mono mt-2 uppercase tracking-widest">Select a command to begin monitoring</p>
+            <div class="flex-1 flex flex-col items-center justify-center p-8 bg-background relative overflow-hidden">
+                <!-- Decorative background elements -->
+                <div
+                    class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[100px] pointer-events-none">
+                </div>
+
+                <div class="relative z-10 max-w-sm w-full flex flex-col items-center text-center space-y-6">
+                    <div
+                        class="w-20 h-20 rounded-2xl bg-card border border-border shadow-sm flex items-center justify-center relative overflow-hidden">
+                        <div class="absolute inset-0 bg-primary/10"></div>
+                        <x-icon name="terminal" class="w-10 h-10 text-primary/80" />
+                    </div>
+
+                    <div class="space-y-2">
+                        <h3 class="text-xl font-black tracking-tighter text-foreground uppercase">SYSTEM STANDBY</h3>
+                        <p class="text-sm text-muted-foreground font-mono leading-relaxed">
+                            Select a process from the sidebar to view output, or <button wire:click="openProjectModal"
+                                class="inline text-primary hover:underline">add a project</button>.
+                        </p>
+                    </div>
                 </div>
             </div>
         @endif
