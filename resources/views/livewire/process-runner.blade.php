@@ -40,8 +40,8 @@
     </div>
 
     <!-- Terminal -->
-    <div class="flex-1 bg-black overflow-hidden flex flex-col relative">
-        <div class="flex-1 overflow-y-auto p-4 font-mono text-sm text-primary whitespace-pre-wrap leading-relaxed focus:outline-none"
+    <div class="flex-1 bg-terminal overflow-hidden flex flex-col relative">
+        <div class="flex-1 overflow-y-auto p-4 font-mono text-sm text-terminal-text whitespace-pre-wrap leading-relaxed focus:outline-none"
              id="terminal-{{ $command->id }}"
              wire:stream="logs-{{ $command->id }}">
             {{ $logs }}

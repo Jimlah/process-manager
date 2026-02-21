@@ -3,28 +3,94 @@
 @source '../views';
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 
-@theme {
-    --color-background: #1e1e2e;
-    --color-foreground: #cdd6f4;
-    --color-card: #181825;
-    --color-card-foreground: #cdd6f4;
-    --color-popover: #181825;
-    --color-popover-foreground: #cdd6f4;
-    --color-primary: #cba6f7;
-    --color-primary-foreground: #11111b;
-    --color-secondary: #313244;
-    --color-secondary-foreground: #cdd6f4;
-    --color-muted: #45475a;
-    --color-muted-foreground: #a6adc8;
-    --color-accent: #313244;
-    --color-accent-foreground: #cdd6f4;
-    --color-destructive: #f38ba8;
-    --color-destructive-foreground: #11111b;
-    --color-success: #a6e3a1;
-    --color-success-foreground: #11111b;
-    --color-border: #313244;
-    --color-input: #313244;
-    --color-ring: #cba6f7;
+/* Class-based dark mode toggle */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ──────────────────────────────────────────────────────────────
+   Light Mode (Catppuccin Latte-inspired — clean, readable)
+   ────────────────────────────────────────────────────────────── */
+:root {
+    --theme-background: #eff1f5;
+    --theme-foreground: #4c4f69;
+    --theme-card: #e6e9ef;
+    --theme-card-foreground: #4c4f69;
+    --theme-popover: #e6e9ef;
+    --theme-popover-foreground: #4c4f69;
+    --theme-primary: #8839ef;
+    --theme-primary-foreground: #eff1f5;
+    --theme-secondary: #ccd0da;
+    --theme-secondary-foreground: #4c4f69;
+    --theme-muted: #bcc0cc;
+    --theme-muted-foreground: #6c6f85;
+    --theme-accent: #ccd0da;
+    --theme-accent-foreground: #4c4f69;
+    --theme-destructive: #d20f39;
+    --theme-destructive-foreground: #eff1f5;
+    --theme-success: #40a02b;
+    --theme-success-foreground: #eff1f5;
+    --theme-border: #bcc0cc;
+    --theme-input: #ccd0da;
+    --theme-ring: #8839ef;
+    --theme-terminal: #dce0e8;
+    --theme-terminal-text: #7c3aed;
+}
+
+/* ──────────────────────────────────────────────────────────────
+   Dark Mode (Catppuccin Mocha / Synthwave Dracula)
+   ────────────────────────────────────────────────────────────── */
+.dark {
+    --theme-background: #1e1e2e;
+    --theme-foreground: #cdd6f4;
+    --theme-card: #181825;
+    --theme-card-foreground: #cdd6f4;
+    --theme-popover: #181825;
+    --theme-popover-foreground: #cdd6f4;
+    --theme-primary: #cba6f7;
+    --theme-primary-foreground: #11111b;
+    --theme-secondary: #313244;
+    --theme-secondary-foreground: #cdd6f4;
+    --theme-muted: #45475a;
+    --theme-muted-foreground: #a6adc8;
+    --theme-accent: #313244;
+    --theme-accent-foreground: #cdd6f4;
+    --theme-destructive: #f38ba8;
+    --theme-destructive-foreground: #11111b;
+    --theme-success: #a6e3a1;
+    --theme-success-foreground: #11111b;
+    --theme-border: #313244;
+    --theme-input: #313244;
+    --theme-ring: #cba6f7;
+    --theme-terminal: #000000;
+    --theme-terminal-text: #cba6f7;
+}
+
+/* ──────────────────────────────────────────────────────────────
+   Theme tokens → Tailwind utility classes via @theme inline
+   ────────────────────────────────────────────────────────────── */
+@theme inline {
+    --color-background: var(--theme-background);
+    --color-foreground: var(--theme-foreground);
+    --color-card: var(--theme-card);
+    --color-card-foreground: var(--theme-card-foreground);
+    --color-popover: var(--theme-popover);
+    --color-popover-foreground: var(--theme-popover-foreground);
+    --color-primary: var(--theme-primary);
+    --color-primary-foreground: var(--theme-primary-foreground);
+    --color-secondary: var(--theme-secondary);
+    --color-secondary-foreground: var(--theme-secondary-foreground);
+    --color-muted: var(--theme-muted);
+    --color-muted-foreground: var(--theme-muted-foreground);
+    --color-accent: var(--theme-accent);
+    --color-accent-foreground: var(--theme-accent-foreground);
+    --color-destructive: var(--theme-destructive);
+    --color-destructive-foreground: var(--theme-destructive-foreground);
+    --color-success: var(--theme-success);
+    --color-success-foreground: var(--theme-success-foreground);
+    --color-border: var(--theme-border);
+    --color-input: var(--theme-input);
+    --color-ring: var(--theme-ring);
+    --color-terminal: var(--theme-terminal);
+    --color-terminal-text: var(--theme-terminal-text);
 
     --font-sans: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
     --radius: 0px;
@@ -44,17 +110,17 @@
         height: 10px;
     }
     ::-webkit-scrollbar-track {
-        background: var(--color-background);
-        border-left: 1px solid var(--color-border);
+        background: var(--theme-background);
+        border-left: 1px solid var(--theme-border);
     }
     ::-webkit-scrollbar-thumb {
-        background: var(--color-muted);
-        border: 1px solid var(--color-background);
+        background: var(--theme-muted);
+        border: 1px solid var(--theme-background);
     }
     ::-webkit-scrollbar-thumb:hover {
-        background: var(--color-accent);
+        background: var(--theme-accent);
     }
     ::-webkit-scrollbar-corner {
-        background: var(--color-background);
+        background: var(--theme-background);
     }
 }
