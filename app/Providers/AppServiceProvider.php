@@ -2,9 +2,13 @@
 
 namespace App\Providers;
 
+use App\Events\CommandStartRequested;
+use App\Events\CommandStopRequested;
+use App\Listeners\HandleCommandControl;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rules\Password;
 
@@ -24,6 +28,9 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->configureDefaults();
+
+        Event::listen(CommandStartRequested::class, HandleCommandControl::class);
+        Event::listen(CommandStopRequested::class, HandleCommandControl::class);
     }
 
     /**
