@@ -19,7 +19,7 @@ class ProcessRunner extends Component
 
     public function mount(): void
     {
-        $this->logs = $this->stripAnsiCodes(
+        $this->logs = $this->convertAnsiToHtml(
             $this->command->processLog?->content ?? ''
         );
     }
@@ -35,24 +35,22 @@ class ProcessRunner extends Component
             return;
         }
 
-        $clean = $this->stripAnsiCodes($data);
+        $html = $this->convertAnsiToHtml($data);
 
-        $this->logs .= $clean;
+        $this->logs .= $html;
 
         $this->stream(
-            content: $clean,
+            content: $html,
             replace: false,
             el: "logs-{$this->command->id}",
         );
     }
 
-    private function stripAnsiCodes(string $text): string
+    private function convertAnsiToHtml(string $text): string
     {
-        // Strip CSI sequences (colors, cursor, erase) and OSC sequences (terminal titles)
-        return preg_replace([
-            '/\e\[[0-9;]*[A-Za-z]/',
-            '/\e\][^\a]*(?:\a|\e\\\\)/',
-        ], '', $text);
+        $converter = new \SensioLabs\AnsiConverter\AnsiToHtmlConverter();
+        
+        return $converter->convert($text);
     }
 
     #[On('native:'.ProcessExited::class)]

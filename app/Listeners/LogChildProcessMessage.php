@@ -18,27 +18,25 @@ class LogChildProcessMessage
             return;
         }
 
-        $clean = $this->stripAnsiCodes($event->data);
+        $html = $this->convertAnsiToHtml($event->data);
 
         $processLog = $command->processLog;
 
         if ($processLog) {
             $processLog->update([
-                'content' => $processLog->content.$clean,
+                'content' => $processLog->content.$html,
             ]);
         } else {
             $command->processLog()->create([
-                'content' => $clean,
+                'content' => $html,
             ]);
         }
     }
 
-    private function stripAnsiCodes(string $text): string
+    private function convertAnsiToHtml(string $text): string
     {
-        // Strip CSI sequences (colors, cursor, erase) and OSC sequences (terminal titles)
-        return preg_replace([
-            '/\e\[[0-9;]*[A-Za-z]/',
-            '/\e\][^\a]*(?:\a|\e\\\\)/',
-        ], '', $text);
+        $converter = new \SensioLabs\AnsiConverter\AnsiToHtmlConverter();
+        
+        return $converter->convert($text);
     }
 }
