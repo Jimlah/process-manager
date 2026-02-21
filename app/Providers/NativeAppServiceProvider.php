@@ -18,7 +18,7 @@ class NativeAppServiceProvider implements ProvidesPhpIni
             ->height(900)
             ->minWidth(1000)
             ->minHeight(600)
-            ->title('Dev Process Manager');
+            ->title('SIGNAL');
     }
 
     /**

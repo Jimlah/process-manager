@@ -2,10 +2,12 @@
     <!-- Sidebar: Tree Navigation -->
     <aside class="w-72 bg-card border-r border-border flex flex-col shrink-0 overflow-hidden">
         <div class="p-4 border-b border-border flex items-center justify-between">
-            <h2 class="font-bold text-foreground tracking-widest text-sm flex items-center gap-2">
-                <x-icon name="terminal" class="w-4 h-4 text-primary" />
-                PROJECTS
-            </h2>
+            <div class="flex items-center gap-2">
+                <img src="/images/logo.png" alt="SIGNAL" class="w-6 h-6 object-contain" />
+                <h2 class="font-black text-foreground tracking-tighter text-lg -ml-1">
+                    SIGNAL
+                </h2>
+            </div>
             <button wire:click="openProjectModal" class="text-muted-foreground hover:text-primary transition-colors">
                 <x-icon name="plus" class="w-4 h-4" />
             </button>
@@ -73,9 +75,9 @@
         @else
             <div class="flex-1 flex items-center justify-center text-muted-foreground">
                 <div class="text-center flex flex-col items-center">
-                    <x-icon name="terminal" class="w-16 h-16 opacity-20 mb-4" />
-                    <p class="text-lg font-bold text-foreground/50">NO PROCESS SELECTED</p>
-                    <p class="text-sm mt-2">Select a command from the sidebar to view output</p>
+                    <img src="/images/logo.png" alt="SIGNAL" class="w-24 h-24 opacity-10 mb-6 grayscale" />
+                    <p class="text-lg font-black tracking-tighter text-foreground/30 italic">INITIALIZING SIGNAL...</p>
+                    <p class="text-xs font-mono mt-2 uppercase tracking-widest">Select a command to begin monitoring</p>
                 </div>
             </div>
         @endif
