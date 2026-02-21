@@ -33,10 +33,38 @@
 
             <div class="w-px h-6 bg-border mx-1"></div>
 
-            <x-button variant="outline" size="sm" wire:click="clearLogs" class="gap-1.5 px-3">
-                <x-icon name="trash" class="w-3.5 h-3.5" />
-                CLEAR
-            </x-button>
+            <x-button variant="outline" size="sm" wire:click="toggleAutoStart"
+                class="gap-1.5 px-3 {{ $command->auto_start ? 'text-primary bg-primary/5 border-primary/30' : 'text-muted-foreground' }}"
+                title="Toggle Auto-Start">
+                <x-icon name="power" class="w-3.5 h-3.5" />
+                <x-tooltip text="Toggle Auto-Start">
+                    <x-button variant="outline" size="sm" wire:click="toggleAutoStart"
+                        class="gap-1.5 px-3 {{ $command->auto_start ? 'text-primary bg-primary/5 border-primary/30' : 'text-muted-foreground' }}"
+                        title="Toggle Auto-Start">
+                        <x-icon name="power" class="w-3.5 h-3.5" />
+                        <span class="text-[10px] uppercase font-bold tracking-widest hidden sm:inline">Auto-Start</span>
+                    </x-button>
+                </x-tooltip>
+
+                <x-tooltip text="Toggle Auto-Restart">
+                    <x-button variant="outline" size="sm" wire:click="toggleAutoRestart"
+                        class="gap-1.5 px-3 {{ $command->auto_restart ? 'text-primary bg-primary/5 border-primary/30' : 'text-muted-foreground' }}"
+                        title="Toggle Auto-Restart">
+                        <x-icon name="refresh" class="w-3.5 h-3.5" />
+                        <span
+                            class="text-[10px] uppercase font-bold tracking-widest hidden sm:inline">Auto-Restart</span>
+                    </x-button>
+                </x-tooltip>
+
+                <div class="w-px h-6 bg-border mx-1"></div>
+
+                <x-tooltip text="Clear Logs">
+                    <x-button variant="outline" size="sm" wire:click="clearLogs"
+                        class="gap-1.5 px-3 uppercase text-[10px] font-bold tracking-widest">
+                        <x-icon name="trash" class="w-3.5 h-3.5" />
+                        CLEAR
+                    </x-button>
+                </x-tooltip>
         </div>
     </div>
 

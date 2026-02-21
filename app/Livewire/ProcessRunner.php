@@ -101,6 +101,18 @@ class ProcessRunner extends Component
         $this->command->processLog?->update(['content' => '']);
     }
 
+    public function toggleAutoStart(): void
+    {
+        $this->command->update(['auto_start' => ! $this->command->auto_start]);
+        \App\Events\ProcessStatusChanged::dispatch($this->command);
+    }
+
+    public function toggleAutoRestart(): void
+    {
+        $this->command->update(['auto_restart' => ! $this->command->auto_restart]);
+        \App\Events\ProcessStatusChanged::dispatch($this->command);
+    }
+
     public function render(): View
     {
         return view('livewire.process-runner');

@@ -100,6 +100,24 @@ class ProjectTree extends Component
         CommandStopRequested::dispatch($command);
     }
 
+    public function toggleAutoStart(int $commandId): void
+    {
+        $command = $this->project->commands->find($commandId);
+        if ($command) {
+            $command->update(['auto_start' => ! $command->auto_start]);
+            ProcessStatusChanged::dispatch($command);
+        }
+    }
+
+    public function toggleAutoRestart(int $commandId): void
+    {
+        $command = $this->project->commands->find($commandId);
+        if ($command) {
+            $command->update(['auto_restart' => ! $command->auto_restart]);
+            ProcessStatusChanged::dispatch($command);
+        }
+    }
+
     public function getRunningCountProperty(): int
     {
         return $this->project->commands->where('status', 'running')->count();
