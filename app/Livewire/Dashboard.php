@@ -6,6 +6,7 @@ use App\Models\Command;
 use App\Models\Project;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Collection;
+use Livewire\Attributes\Computed;
 use Livewire\Attributes\On;
 use Livewire\Component;
 use Native\Desktop\Dialog;
@@ -13,6 +14,8 @@ use Native\Desktop\Dialog;
 class Dashboard extends Component
 {
     public ?int $selectedCommandId = null;
+
+    public bool $projectsLoaded = false;
 
     public bool $showProjectModal = false;
 
@@ -117,10 +120,25 @@ class Dashboard extends Component
         $this->closeCommandModal();
     }
 
+    public function loadProjects(): void
+    {
+        $this->projectsLoaded = true;
+    }
+
     #[On('process-status-changed')]
     public function refreshData(): void
     {
         // Triggers re-render so computed properties update
+    }
+
+    #[Computed]
+    public function projects(): Collection
+    {
+        if (! $this->projectsLoaded) {
+            return new Collection;
+        }
+
+        return Project::with('commands')->orderBy('name')->get();
     }
 
     public function getRunningCommandsProperty(): Collection
@@ -139,8 +157,6 @@ class Dashboard extends Component
 
     public function render(): View
     {
-        return view('livewire.dashboard', [
-            'projects' => Project::with('commands')->orderBy('name')->get(),
-        ]);
+        return view('livewire.dashboard');
     }
 }

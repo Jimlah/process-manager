@@ -1,4 +1,4 @@
-<div class="flex h-full w-full overflow-hidden" x-data="{}">
+<div class="flex h-full w-full overflow-hidden" x-data="{}" wire:init="loadProjects">
     <!-- Sidebar: Tree Navigation -->
     <aside class="w-72 bg-card border-r border-border flex flex-col shrink-0 overflow-hidden">
         <div class="p-4 border-b border-border flex items-center justify-between">
@@ -12,15 +12,25 @@
         </div>
 
         <div class="flex-1 overflow-y-auto p-2 space-y-1">
-            @foreach($projects as $project)
-                <livewire:project-tree
-                    :project="$project"
-                    :selected-command-id="$selectedCommandId"
-                    :key="'project-'.$project->id"
-                />
-            @endforeach
-            @if($projects->isEmpty())
-                <div class="text-xs text-muted-foreground p-4 text-center">No projects configured.</div>
+            @if(!$projectsLoaded)
+                {{-- Skeleton placeholders --}}
+                @for($i = 0; $i < 3; $i++)
+                    <div class="animate-pulse mb-2">
+                        <div class="flex items-center gap-2 py-1.5 px-2">
+                            <div class="w-3 h-3 bg-muted-foreground/20 rounded"></div>
+                            <div class="w-3.5 h-3.5 bg-muted-foreground/20 rounded"></div>
+                            <div class="h-3 bg-muted-foreground/20 rounded flex-1"></div>
+                        </div>
+                    </div>
+                @endfor
+            @else
+                @foreach($this->projects as $project)
+                    <livewire:project-tree :project="$project" :selected-command-id="$selectedCommandId"
+                        :key="'project-' . $project->id" />
+                @endforeach
+                @if($this->projects->isEmpty())
+                    <div class="text-xs text-muted-foreground p-4 text-center">No projects configured.</div>
+                @endif
             @endif
         </div>
 
@@ -30,35 +40,27 @@
                 <div class="flex items-center justify-between">
                     <span class="text-xs font-bold text-muted-foreground uppercase tracking-wider">THEME</span>
                     <div class="flex items-center gap-0.5 border border-border bg-background p-0.5">
-                        <button
-                            @click="set('light')"
+                        <button @click="set('light')"
                             :class="theme === 'light' ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:text-foreground'"
-                            class="p-1.5 transition-colors"
-                            title="Light Mode"
-                        >
+                            class="p-1.5 transition-colors" title="Light Mode">
                             <x-icon name="sun" class="w-3.5 h-3.5" />
                         </button>
-                        <button
-                            @click="set('dark')"
+                        <button @click="set('dark')"
                             :class="theme === 'dark' ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:text-foreground'"
-                            class="p-1.5 transition-colors"
-                            title="Dark Mode"
-                        >
+                            class="p-1.5 transition-colors" title="Dark Mode">
                             <x-icon name="moon" class="w-3.5 h-3.5" />
                         </button>
-                        <button
-                            @click="set('system')"
+                        <button @click="set('system')"
                             :class="theme === 'system' ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:text-foreground'"
-                            class="p-1.5 transition-colors"
-                            title="System"
-                        >
+                            class="p-1.5 transition-colors" title="System">
                             <x-icon name="monitor" class="w-3.5 h-3.5" />
                         </button>
                     </div>
                 </div>
             </div>
-            
-            <a href="/settings" class="flex items-center justify-between py-2 text-xs font-bold text-muted-foreground uppercase tracking-wider hover:text-primary transition-colors cursor-pointer">
+
+            <a href="/settings"
+                class="flex items-center justify-between py-2 text-xs font-bold text-muted-foreground uppercase tracking-wider hover:text-primary transition-colors cursor-pointer">
                 <span>Settings</span>
                 <x-icon name="settings" class="w-3.5 h-3.5" />
             </a>
@@ -68,10 +70,7 @@
     <!-- Main Content: Log Viewer -->
     <main class="flex-1 bg-background overflow-hidden flex flex-col">
         @if($this->selectedCommand)
-            <livewire:process-runner
-                :command="$this->selectedCommand"
-                :key="'runner-'.$selectedCommandId"
-            />
+            <livewire:process-runner :command="$this->selectedCommand" :key="'runner-' . $selectedCommandId" />
         @else
             <div class="flex-1 flex items-center justify-center text-muted-foreground">
                 <div class="text-center flex flex-col items-center">
@@ -86,20 +85,23 @@
     <!-- Project Modal -->
     <x-modal :show="$showProjectModal" title="NEW PROJECT" wire:click.self="closeProjectModal">
         <x-slot:close>
-            <button type="button" class="text-muted-foreground hover:text-foreground transition-colors" wire:click="closeProjectModal">
+            <button type="button" class="text-muted-foreground hover:text-foreground transition-colors"
+                wire:click="closeProjectModal">
                 <x-icon name="plus" class="w-4 h-4 rotate-45" />
             </button>
         </x-slot:close>
 
         <div class="space-y-4">
             <div>
-                <label class="block text-xs font-bold text-muted-foreground mb-1 uppercase tracking-wider">Project Name</label>
+                <label class="block text-xs font-bold text-muted-foreground mb-1 uppercase tracking-wider">Project
+                    Name</label>
                 <x-input wire:model="projectName" placeholder="e.g., eClinic" />
                 @error('projectName')<span class="text-destructive text-xs mt-1 block">{{ $message }}</span>@enderror
             </div>
 
             <div>
-                <label class="block text-xs font-bold text-muted-foreground mb-1 uppercase tracking-wider">Project Path</label>
+                <label class="block text-xs font-bold text-muted-foreground mb-1 uppercase tracking-wider">Project
+                    Path</label>
                 <div class="flex gap-2">
                     <x-input wire:model="projectPath" placeholder="/Users/{{ get_current_user() }}/Projects/eclinic" />
                     <x-button variant="outline" wire:click="selectProjectPath">Browse</x-button>
@@ -117,7 +119,8 @@
     <!-- Command Modal -->
     <x-modal :show="$showCommandModal" title="NEW COMMAND" wire:click.self="closeCommandModal">
         <x-slot:close>
-            <button type="button" class="text-muted-foreground hover:text-foreground transition-colors" wire:click="closeCommandModal">
+            <button type="button" class="text-muted-foreground hover:text-foreground transition-colors"
+                wire:click="closeCommandModal">
                 <x-icon name="plus" class="w-4 h-4 rotate-45" />
             </button>
         </x-slot:close>
@@ -130,19 +133,18 @@
 
         <div class="space-y-4">
             <div>
-                <label class="block text-xs font-bold text-muted-foreground mb-1 uppercase tracking-wider">Command Name</label>
+                <label class="block text-xs font-bold text-muted-foreground mb-1 uppercase tracking-wider">Command
+                    Name</label>
                 <x-input wire:model="commandName" placeholder="e.g., Vite Dev Server" />
                 @error('commandName')<span class="text-destructive text-xs mt-1 block">{{ $message }}</span>@enderror
             </div>
 
             <div>
-                <label class="block text-xs font-bold text-muted-foreground mb-1 uppercase tracking-wider">Command</label>
-                <textarea
-                    wire:model="commandText"
-                    rows="3"
+                <label
+                    class="block text-xs font-bold text-muted-foreground mb-1 uppercase tracking-wider">Command</label>
+                <textarea wire:model="commandText" rows="3"
                     class="flex w-full bg-background px-3 py-2 text-sm shadow-sm transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring border border-input resize-none"
-                    placeholder="npm run dev"
-                ></textarea>
+                    placeholder="npm run dev"></textarea>
                 @error('commandText')<span class="text-destructive text-xs mt-1 block">{{ $message }}</span>@enderror
             </div>
         </div>
