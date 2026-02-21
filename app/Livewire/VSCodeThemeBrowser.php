@@ -21,11 +21,6 @@ class VSCodeThemeBrowser extends Component
 
     public bool $hasSearched = false;
 
-    public function mount(): void
-    {
-        $this->loadPopularThemes();
-    }
-
     public function loadPopularThemes(): void
     {
         try {

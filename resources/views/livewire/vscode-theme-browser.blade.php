@@ -1,4 +1,4 @@
-<div>
+<div wire:init="loadPopularThemes">
     <!-- Search Bar -->
     <div class="mb-4">
         <div class="relative">
@@ -28,101 +28,104 @@
         </div>
     @endif
 
-    <!-- Loading Overlay -->
-    <div wire:loading.delay wire:target="search, updatedSearchQuery" class="flex items-center justify-center py-12">
-        <div class="text-center">
-            <x-icon name="loader" class="w-6 h-6 text-primary animate-spin mx-auto mb-2" />
-            <p class="text-xs text-muted-foreground">Loading themes...</p>
+    <!-- Not yet loaded state -->
+    @if(!$hasSearched)
+        <div class="flex items-center justify-center py-12">
+            <div class="text-center">
+                <x-icon name="loader" class="w-6 h-6 text-primary animate-spin mx-auto mb-2" />
+                <p class="text-xs text-muted-foreground">Loading themes...</p>
+            </div>
         </div>
-    </div>
+    @else
+        <!-- Loading during search -->
+        <div wire:loading.delay wire:target="search, updatedSearchQuery" class="flex items-center justify-center py-8">
+            <div class="text-center">
+                <x-icon name="loader" class="w-5 h-5 text-primary animate-spin mx-auto mb-2" />
+                <p class="text-xs text-muted-foreground">Searching...</p>
+            </div>
+        </div>
 
-    <!-- Theme Grid -->
-    <div wire:loading.remove wire:target="search, updatedSearchQuery"
-        class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
-        @foreach($extensions as $ext)
-            <div class="bg-card border border-border hover:border-primary/30 transition-colors group"
-                wire:key="ext-{{ $ext['publisherName'] }}-{{ $ext['name'] }}">
-                <!-- Extension Header -->
-                <div class="p-3 border-b border-border">
-                    <div class="flex items-start justify-between gap-2">
+        <!-- Theme List -->
+        <div wire:loading.remove wire:target="search, updatedSearchQuery" class="space-y-3">
+            @foreach($extensions as $ext)
+                <div class="bg-card border border-border" wire:key="ext-{{ $ext['publisherName'] }}-{{ $ext['name'] }}">
+                    <!-- Extension Header -->
+                    <div class="px-3 py-2.5 border-b border-border flex items-center justify-between gap-3">
                         <div class="min-w-0">
-                            <h3 class="text-sm font-medium text-foreground truncate">{{ $ext['displayName'] }}</h3>
+                            <div class="flex items-center gap-2">
+                                <h3 class="text-sm font-medium text-foreground truncate">{{ $ext['displayName'] }}</h3>
+                                <x-badge>{{ $ext['totalThemes'] ?? count($ext['themes'] ?? []) }}</x-badge>
+                            </div>
                             <p class="text-[10px] text-muted-foreground truncate">
                                 {{ $ext['publisherDisplayName'] ?? $ext['publisherName'] }}</p>
                         </div>
-                        <x-badge>{{ $ext['totalThemes'] ?? count($ext['themes'] ?? []) }} themes</x-badge>
                     </div>
-                    @if(!empty($ext['shortDescription']))
-                        <p class="text-[10px] text-muted-foreground mt-1.5 line-clamp-2">{{ $ext['shortDescription'] }}</p>
-                    @endif
-                </div>
 
-                <!-- Theme Variants with SVG Previews -->
-                <div class="p-2 space-y-2 max-h-96 overflow-y-auto">
-                    @foreach(($ext['themes'] ?? []) as $theme)
-                        <div class="border border-border hover:border-primary/30 transition-colors group/theme overflow-hidden"
-                            wire:key="theme-{{ $ext['publisherName'] }}-{{ $ext['name'] }}-{{ $theme['name'] }}">
-                            <!-- SVG Preview Image -->
-                            @if(!empty($theme['url']))
-                                <div class="w-full aspect-video overflow-hidden bg-background"
-                                    style="background-color: {{ $theme['editorBackground'] ?? '#1e1e2e' }}">
-                                    <img src="{{ $theme['url'] }}" alt="{{ $theme['displayName'] ?? $theme['name'] }} preview"
-                                        class="w-full h-full object-cover object-top" loading="lazy">
-                                </div>
-                            @else
-                                {{-- Fallback: color swatch if no SVG --}}
-                                <div class="w-full h-16" style="background-color: {{ $theme['editorBackground'] ?? '#1e1e2e' }}">
-                                </div>
-                            @endif
-
-                            <!-- Theme Info + Download -->
-                            <div class="flex items-center justify-between gap-2 p-2 bg-card">
-                                <div class="flex items-center gap-2 min-w-0">
-                                    <div class="w-4 h-4 shrink-0 border border-border"
-                                        style="background-color: {{ $theme['editorBackground'] ?? '#1e1e2e' }}"></div>
-                                    <div class="min-w-0">
-                                        <span
-                                            class="text-xs text-foreground truncate block">{{ $theme['displayName'] ?? $theme['name'] }}</span>
+                    <!-- Theme Variants -->
+                    <div class="divide-y divide-border">
+                        @foreach(($ext['themes'] ?? []) as $theme)
+                            <div class="flex items-center gap-3 px-3 py-2 hover:bg-muted/20 transition-colors"
+                                wire:key="theme-{{ $ext['publisherName'] }}-{{ $ext['name'] }}-{{ $theme['name'] }}">
+                                <!-- SVG Preview -->
+                                @if(!empty($theme['url']))
+                                    <div class="w-32 h-20 shrink-0 border border-border overflow-hidden"
+                                        style="background-color: {{ $theme['editorBackground'] ?? '#1e1e2e' }}">
+                                        <img src="{{ $theme['url'] }}" alt="{{ $theme['displayName'] ?? $theme['name'] }}"
+                                            class="w-full h-full object-cover object-top" loading="lazy">
                                     </div>
+                                @else
+                                    <div class="w-32 h-20 shrink-0 border border-border"
+                                        style="background-color: {{ $theme['editorBackground'] ?? '#1e1e2e' }}"></div>
+                                @endif
+
+                                <!-- Info -->
+                                <div class="flex-1 min-w-0">
+                                    <span
+                                        class="text-xs font-medium text-foreground block truncate">{{ $theme['displayName'] ?? $theme['name'] }}</span>
+                                    <span
+                                        class="text-[10px] text-muted-foreground font-mono">{{ $theme['editorBackground'] ?? '' }}</span>
                                 </div>
 
+                                <!-- Download Button (always visible) -->
                                 @if($downloadingTheme === "{$ext['publisherName']}.{$ext['name']}.{$theme['name']}")
-                                    <x-icon name="loader" class="w-3.5 h-3.5 text-primary animate-spin shrink-0" />
+                                    <x-icon name="loader" class="w-4 h-4 text-primary animate-spin shrink-0" />
                                 @else
                                     <button
                                         wire:click="downloadTheme('{{ $ext['publisherName'] }}', '{{ $ext['name'] }}', '{{ $theme['displayName'] ?? $theme['name'] }}', '{{ $theme['url'] ?? '' }}')"
-                                        class="opacity-0 group-hover/theme:opacity-100 text-muted-foreground hover:text-primary transition-all shrink-0 p-1"
+                                        class="shrink-0 inline-flex items-center gap-1.5 px-2.5 py-1.5 text-[10px] font-medium bg-primary/10 text-primary border border-primary/20 hover:bg-primary/20 transition-colors"
                                         title="Download & activate">
-                                        <x-icon name="download" class="w-3.5 h-3.5" />
+                                        <x-icon name="download" class="w-3 h-3" />
+                                        Download
                                     </button>
                                 @endif
                             </div>
-                        </div>
-                    @endforeach
+                        @endforeach
 
-                    @if(empty($ext['themes']))
-                        <div class="flex items-center justify-between p-1.5">
-                            <span class="text-xs text-muted-foreground">No theme variants listed</span>
-                            @if($downloadingTheme === "{$ext['publisherName']}.{$ext['name']}")
-                                <x-icon name="loader" class="w-3.5 h-3.5 text-primary animate-spin" />
-                            @else
-                                <button wire:click="downloadTheme('{{ $ext['publisherName'] }}', '{{ $ext['name'] }}')"
-                                    class="text-muted-foreground hover:text-primary transition-colors"
-                                    title="Download default theme">
-                                    <x-icon name="download" class="w-3.5 h-3.5" />
-                                </button>
-                            @endif
-                        </div>
-                    @endif
+                        @if(empty($ext['themes']))
+                            <div class="flex items-center justify-between px-3 py-2">
+                                <span class="text-xs text-muted-foreground">Default theme</span>
+                                @if($downloadingTheme === "{$ext['publisherName']}.{$ext['name']}")
+                                    <x-icon name="loader" class="w-4 h-4 text-primary animate-spin" />
+                                @else
+                                    <button wire:click="downloadTheme('{{ $ext['publisherName'] }}', '{{ $ext['name'] }}')"
+                                        class="inline-flex items-center gap-1.5 px-2.5 py-1.5 text-[10px] font-medium bg-primary/10 text-primary border border-primary/20 hover:bg-primary/20 transition-colors"
+                                        title="Download default theme">
+                                        <x-icon name="download" class="w-3 h-3" />
+                                        Download
+                                    </button>
+                                @endif
+                            </div>
+                        @endif
+                    </div>
                 </div>
-            </div>
-        @endforeach
-    </div>
-
-    @if($hasSearched && empty($extensions))
-        <div class="text-center py-12 text-muted-foreground">
-            <x-icon name="search" class="w-8 h-8 mx-auto mb-2 opacity-30" />
-            <p class="text-sm">No themes found for "{{ $searchQuery }}"</p>
+            @endforeach
         </div>
+
+        @if(empty($extensions))
+            <div class="text-center py-12 text-muted-foreground">
+                <x-icon name="search" class="w-8 h-8 mx-auto mb-2 opacity-30" />
+                <p class="text-sm">No themes found for "{{ $searchQuery }}"</p>
+            </div>
+        @endif
     @endif
 </div>

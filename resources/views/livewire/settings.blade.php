@@ -6,7 +6,7 @@
                 <x-icon name="settings" class="w-4 h-4 text-primary" />
                 SETTINGS
             </h2>
-            <a href="/dashboard" class="text-muted-foreground hover:text-primary transition-colors">
+            <a href="/" class="text-muted-foreground hover:text-primary transition-colors">
                 <x-icon name="arrow-left" class="w-4 h-4" />
             </a>
         </div>
@@ -53,52 +53,46 @@
                     @if($themes->isEmpty())
                         <div class="text-xs text-muted-foreground text-center py-6">No themes installed.</div>
                     @else
-                        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2.5">
+                        <div class="space-y-1">
                             @foreach($themes as $theme)
                                 @php
                                     $bgColor = $theme->colors['editor.background'] ?? ($theme->is_builtin ? ($theme->slug === 'light' ? '#eff1f5' : '#1e1e2e') : '#2b2b2a');
+                                    $fgColor = $theme->colors['editor.foreground'] ?? '#cdd6f4';
                                     $isSelected = $selectedThemeId === $theme->id;
                                 @endphp
-                                <div wire:click="activateTheme({{ $theme->id }})" wire:key="installed-theme-{{ $theme->id }}"
+                                <button wire:click="activateTheme({{ $theme->id }})" wire:key="installed-theme-{{ $theme->id }}"
                                     @class([
-                                        'p-3 cursor-pointer transition-all border group relative',
-                                        'border-primary bg-primary/5 ring-1 ring-primary/30' => $isSelected,
-                                        'border-border hover:border-primary/30 hover:bg-muted/20' => !$isSelected,
+                                        'w-full flex items-center gap-3 px-3 py-2 text-left transition-colors group',
+                                        'bg-primary/10 border-l-2 border-primary' => $isSelected,
+                                        'hover:bg-muted/20 border-l-2 border-transparent' => !$isSelected,
                                     ])>
-                                    {{-- Color swatch --}}
-                                    <div class="w-full h-10 border border-border mb-2" style="background-color: {{ $bgColor }}">
+                                    {{-- Color preview bar --}}
+                                    <div class="w-10 h-7 shrink-0 ring-1 ring-white/10 overflow-hidden flex"
+                                        style="background-color: {{ $bgColor }}">
+                                        <span class="m-auto text-[7px] font-mono leading-none"
+                                            style="color: {{ $fgColor }}">Aa</span>
                                     </div>
 
-                                    <div class="flex items-center justify-between gap-1">
-                                        <span @class(['text-xs font-medium truncate', 'text-primary' => $isSelected, 'text-foreground' => !$isSelected])>
-                                            {{ $theme->name }}
-                                        </span>
-                                        @if($isSelected)
-                                            <x-icon name="check" class="w-3 h-3 text-primary shrink-0" />
-                                        @endif
-                                    </div>
+                                    {{-- Name --}}
+                                    <span @class(['text-xs font-medium truncate flex-1', 'text-primary' => $isSelected, 'text-foreground' => !$isSelected])>{{ $theme->name }}</span>
 
+                                    {{-- Tags --}}
                                     @if($theme->is_builtin)
-                                        <span class="text-[9px] text-muted-foreground">Built-in</span>
+                                        <span class="text-[9px] text-muted-foreground shrink-0">Built-in</span>
+                                    @endif
+                                    @if($isSelected)
+                                        <x-icon name="check" class="w-3.5 h-3.5 text-primary shrink-0" />
                                     @endif
 
-                                    {{-- Delete button for custom themes --}}
+                                    {{-- Delete --}}
                                     @if(!$theme->is_builtin)
-                                        <button wire:click.stop="deleteTheme({{ $theme->id }})"
-                                            class="absolute top-1.5 right-1.5 opacity-0 group-hover:opacity-100 text-muted-foreground hover:text-destructive transition-all p-0.5"
-                                            title="Delete theme">
+                                        <span wire:click.stop="deleteTheme({{ $theme->id }})"
+                                            class="opacity-0 group-hover:opacity-100 text-muted-foreground hover:text-destructive transition-all cursor-pointer shrink-0"
+                                            title="Delete">
                                             <x-icon name="trash" class="w-3 h-3" />
-                                        </button>
+                                        </span>
                                     @endif
-
-                                    {{-- Preview image --}}
-                                    @if($theme->preview_url)
-                                        <div class="mt-2 border border-border overflow-hidden bg-background">
-                                            <img src="{{ $theme->preview_url }}" alt="{{ $theme->name }}"
-                                                class="w-full h-12 object-cover object-top">
-                                        </div>
-                                    @endif
-                                </div>
+                                </button>
                             @endforeach
                         </div>
                     @endif
