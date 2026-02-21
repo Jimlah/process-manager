@@ -1,15 +1,15 @@
 <div wire:init="loadPopularThemes">
-    <!-- Search Bar -->
+    <!-- Search Bar (Terminal Prompt Style) -->
     <div class="mb-4">
         <div class="relative">
-            <x-icon name="search" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-            <input wire:model.live.debounce.500ms="searchQuery" type="text" placeholder="Search VS Code themes..."
-                class="w-full h-9 bg-background pl-10 pr-3 py-1 text-sm shadow-sm transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring border border-input">
+            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-primary text-xs font-bold">$</span>
+            <input wire:model.live.debounce.500ms="searchQuery" type="text" placeholder="search themes..."
+                class="w-full h-9 bg-background pl-8 pr-3 py-1 text-sm shadow-sm transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring border border-input">
         </div>
         @if($hasSearched)
             <div class="text-[10px] text-muted-foreground mt-1.5">
                 {{ number_format($totalResults) }} themes available
-                <span wire:loading wire:target="search, updatedSearchQuery" class="text-primary ml-1">Searching...</span>
+                <span wire:loading wire:target="search, updatedSearchQuery" class="text-primary ml-1">searching...</span>
             </div>
         @endif
     </div>
@@ -23,7 +23,8 @@
                 default => 'text-muted-foreground bg-muted/5 border-border',
             };
         @endphp
-        <div class="text-xs p-2.5 mb-4 border {{ $statusClass }}">
+        <div class="text-xs p-2.5 mb-4 border {{ $statusClass }} flex items-center gap-2">
+            <span class="text-primary font-bold">>>></span>
             {{ $downloadStatus }}
         </div>
     @endif
@@ -48,16 +49,18 @@
         <!-- Theme List -->
         <div wire:loading.remove wire:target="search, updatedSearchQuery" class="space-y-3">
             @foreach($extensions as $ext)
-                <div class="bg-card border border-border" wire:key="ext-{{ $ext['publisherName'] }}-{{ $ext['name'] }}">
+                <div class="border border-border" wire:key="ext-{{ $ext['publisherName'] }}-{{ $ext['name'] }}">
                     <!-- Extension Header -->
-                    <div class="px-3 py-2.5 border-b border-border flex items-center justify-between gap-3">
+                    <div class="px-3 py-2.5 bg-card border-b border-border flex items-center justify-between gap-3">
                         <div class="min-w-0">
                             <div class="flex items-center gap-2">
-                                <h3 class="text-sm font-medium text-foreground truncate">{{ $ext['displayName'] }}</h3>
+                                <h3 class="text-xs font-bold text-foreground truncate uppercase tracking-wide">
+                                    {{ $ext['displayName'] }}</h3>
                                 <x-badge>{{ $ext['totalThemes'] ?? count($ext['themes'] ?? []) }}</x-badge>
                             </div>
                             <p class="text-[10px] text-muted-foreground truncate">
-                                {{ $ext['publisherDisplayName'] ?? $ext['publisherName'] }}</p>
+                                {{ $ext['publisherDisplayName'] ?? $ext['publisherName'] }}
+                            </p>
                         </div>
                     </div>
 
@@ -68,14 +71,17 @@
                                 wire:key="theme-{{ $ext['publisherName'] }}-{{ $ext['name'] }}-{{ $theme['name'] }}">
                                 <!-- SVG Preview -->
                                 @if(!empty($theme['url']))
-                                    <div class="w-32 h-20 shrink-0 border border-border overflow-hidden"
+                                    <div class="w-28 h-16 shrink-0 border border-border overflow-hidden"
                                         style="background-color: {{ $theme['editorBackground'] ?? '#1e1e2e' }}">
                                         <img src="{{ $theme['url'] }}" alt="{{ $theme['displayName'] ?? $theme['name'] }}"
                                             class="w-full h-full object-cover object-top" loading="lazy">
                                     </div>
                                 @else
-                                    <div class="w-32 h-20 shrink-0 border border-border"
-                                        style="background-color: {{ $theme['editorBackground'] ?? '#1e1e2e' }}"></div>
+                                    <div class="w-28 h-16 shrink-0 border border-border flex items-center justify-center"
+                                        style="background-color: {{ $theme['editorBackground'] ?? '#1e1e2e' }}">
+                                        <span class="text-[10px] font-mono"
+                                            style="color: {{ $theme['editorForeground'] ?? '#cdd6f4' }}">Aa</span>
+                                    </div>
                                 @endif
 
                                 <!-- Info -->

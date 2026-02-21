@@ -1,0 +1,26 @@
+/* Custom Theme: Andromeda */
+:root {
+  --theme-background: #23262E;
+  --theme-foreground: #D5CED9;
+  --theme-card: #23262E;
+  --theme-card-foreground: #999999;
+  --theme-popover: #2b303b;
+  --theme-popover-foreground: #cdd6f4;
+  --theme-primary: #00e8c5cc;
+  --theme-primary-foreground: #11111b;
+  --theme-secondary: #2b303b;
+  --theme-secondary-foreground: #cdd6f4;
+  --theme-muted: #00b0ff;
+  --theme-muted-foreground: #20232B;
+  --theme-accent: #23262E;
+  --theme-accent-foreground: #00e8c6;
+  --theme-destructive: #FC644D;
+  --theme-destructive-foreground: #23262E;
+  --theme-success: #96E072;
+  --theme-success-foreground: #23262E;
+  --theme-border: #1B1D23;
+  --theme-input: #2b303b;
+  --theme-ring: #746f77;
+  --theme-terminal: #23262E;
+  --theme-terminal-text: #D5CED9;
+}

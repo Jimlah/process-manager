@@ -358,8 +358,8 @@ class VSCodeThemeService
         $name = $themeData['name'];
         $slug = Str::slug($name);
 
-        // Check if theme already exists
-        $existing = Theme::where('slug', $slug)->first();
+        // Check if theme already exists by name (slug has uniqid suffix so can't match on it)
+        $existing = Theme::where('name', $name)->first();
         if ($existing) {
             $existing->update([
                 'colors' => $themeData['colors'],

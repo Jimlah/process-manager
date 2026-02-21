@@ -68,8 +68,8 @@ class Settings extends Component
         $name = $themeData['name'];
         $slug = Str::slug($name).'-'.uniqid();
 
-        // Check if theme already exists
-        $existing = Theme::where('slug', Str::slug($name))->first();
+        // Check if theme already exists by name (slug has uniqid suffix so can't match on it)
+        $existing = Theme::where('name', $name)->first();
         if ($existing) {
             $existing->update([
                 'colors' => $themeData['colors'],

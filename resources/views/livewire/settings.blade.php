@@ -12,21 +12,24 @@
         </div>
 
         <div class="flex-1 overflow-y-auto p-2 space-y-1">
+            {{-- Section divider --}}
+            <div class="px-3 py-1.5 text-[9px] text-muted-foreground tracking-widest">-- MENU --</div>
+
             <!-- Themes Tab -->
             <button wire:click="setTab('themes')" @class([
                 'w-full flex items-center gap-2.5 px-3 py-2 text-xs font-medium transition-colors text-left',
-                'bg-primary/10 text-primary border-l-2 border-primary' => $activeTab === 'themes',
-                'text-muted-foreground hover:text-foreground hover:bg-muted/30 border-l-2 border-transparent' => $activeTab !== 'themes',
+                'bg-primary text-primary-foreground' => $activeTab === 'themes',
+                'text-muted-foreground hover:text-foreground hover:bg-muted/30' => $activeTab !== 'themes',
             ])>
                 <x-icon name="palette" class="w-4 h-4" />
-                Appearance & Themes
+                Appearance
             </button>
 
-            <!-- General Tab (placeholder) -->
+            <!-- General Tab -->
             <button wire:click="setTab('general')" @class([
                 'w-full flex items-center gap-2.5 px-3 py-2 text-xs font-medium transition-colors text-left',
-                'bg-primary/10 text-primary border-l-2 border-primary' => $activeTab === 'general',
-                'text-muted-foreground hover:text-foreground hover:bg-muted/30 border-l-2 border-transparent' => $activeTab !== 'general',
+                'bg-primary text-primary-foreground' => $activeTab === 'general',
+                'text-muted-foreground hover:text-foreground hover:bg-muted/30' => $activeTab !== 'general',
             ])>
                 <x-icon name="settings" class="w-4 h-4" />
                 General
@@ -39,21 +42,21 @@
         <div class="flex-1 overflow-y-auto p-6">
 
             @if($activeTab === 'themes')
+                {{-- Breadcrumb --}}
+                <div class="text-[10px] text-muted-foreground mb-4 tracking-wide">~/settings/appearance</div>
+
                 {{-- ===== THEMES TAB ===== --}}
-                <h1 class="text-xl font-bold text-foreground mb-6">Appearance & Themes</h1>
+                <h1 class="text-xl font-bold text-primary uppercase tracking-wider mb-1">Appearance & Themes</h1>
+                <p class="text-[10px] text-muted-foreground mb-6">Theme management & customization</p>
 
                 {{-- Installed Themes --}}
                 <div class="bg-card border border-border p-5 mb-6">
-                    <h2
-                        class="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-4 flex items-center gap-2">
-                        <x-icon name="check-circle" class="w-3.5 h-3.5" />
-                        Installed Themes
-                    </h2>
+                    <h2 class="text-[10px] text-muted-foreground tracking-widest mb-4">-- INSTALLED_THEMES --</h2>
 
                     @if($themes->isEmpty())
                         <div class="text-xs text-muted-foreground text-center py-6">No themes installed.</div>
                     @else
-                        <div class="space-y-1">
+                        <div class="space-y-0.5">
                             @foreach($themes as $theme)
                                 @php
                                     $bgColor = $theme->colors['editor.background'] ?? ($theme->is_builtin ? ($theme->slug === 'light' ? '#eff1f5' : '#1e1e2e') : '#2b2b2a');
@@ -62,11 +65,11 @@
                                 @endphp
                                 <button wire:click="activateTheme({{ $theme->id }})" wire:key="installed-theme-{{ $theme->id }}"
                                     @class([
-                                        'w-full flex items-center gap-3 px-3 py-2 text-left transition-colors group',
-                                        'bg-primary/10 border-l-2 border-primary' => $isSelected,
-                                        'hover:bg-muted/20 border-l-2 border-transparent' => !$isSelected,
+                                        'w-full flex items-center gap-3 px-3 py-2.5 text-left transition-colors group',
+                                        'bg-primary/10 border border-primary/40' => $isSelected,
+                                        'hover:bg-muted/20 border border-transparent' => !$isSelected,
                                     ])>
-                                    {{-- Color preview bar --}}
+                                    {{-- Color preview --}}
                                     <div class="w-10 h-7 shrink-0 ring-1 ring-white/10 overflow-hidden flex"
                                         style="background-color: {{ $bgColor }}">
                                         <span class="m-auto text-[7px] font-mono leading-none"
@@ -74,14 +77,18 @@
                                     </div>
 
                                     {{-- Name --}}
-                                    <span @class(['text-xs font-medium truncate flex-1', 'text-primary' => $isSelected, 'text-foreground' => !$isSelected])>{{ $theme->name }}</span>
+                                    <span @class([
+                                        'text-xs font-medium truncate flex-1 uppercase tracking-wide',
+                                        'text-primary' => $isSelected,
+                                        'text-foreground' => !$isSelected,
+                                    ])>{{ $theme->name }}</span>
 
-                                    {{-- Tags --}}
-                                    @if($theme->is_builtin)
-                                        <span class="text-[9px] text-muted-foreground shrink-0">Built-in</span>
-                                    @endif
+                                    {{-- Status tags --}}
                                     @if($isSelected)
-                                        <x-icon name="check" class="w-3.5 h-3.5 text-primary shrink-0" />
+                                        <span class="text-[9px] text-primary font-bold tracking-wider shrink-0">[ ACTIVE ]</span>
+                                    @endif
+                                    @if($theme->is_builtin)
+                                        <span class="text-[9px] text-muted-foreground tracking-wider shrink-0">[ BUILT_IN ]</span>
                                     @endif
 
                                     {{-- Delete --}}
@@ -106,32 +113,24 @@
                             default => 'text-muted-foreground bg-muted/5 border-border',
                         };
                     @endphp
-                    <div class="text-xs p-2.5 mb-4 border {{ $statusClass }}">
+                    <div class="text-xs p-2.5 mb-4 border {{ $statusClass }} flex items-center gap-2">
+                        <span class="text-primary font-bold">>>></span>
                         {{ $importStatus }}
                     </div>
                 @endif
 
                 {{-- Browse VS Code Themes --}}
                 <div class="bg-card border border-border p-5 mb-6">
-                    <h2
-                        class="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-4 flex items-center gap-2">
-                        <x-icon name="globe" class="w-3.5 h-3.5" />
-                        Browse VS Code Themes
-                    </h2>
+                    <h2 class="text-[10px] text-muted-foreground tracking-widest mb-1">-- THEME_BROWSER --</h2>
                     <p class="text-[10px] text-muted-foreground mb-4">
-                        Search and download themes from the VS Code Marketplace. Themes are downloaded and imported
-                        automatically.
+                        Search and download themes from the VS Code Marketplace.
                     </p>
                     <livewire:vscode-theme-browser />
                 </div>
 
                 {{-- Import From File / JSON --}}
                 <div class="bg-card border border-border p-5">
-                    <h2
-                        class="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-4 flex items-center gap-2">
-                        <x-icon name="upload" class="w-3.5 h-3.5" />
-                        Import Theme Manually
-                    </h2>
+                    <h2 class="text-[10px] text-muted-foreground tracking-widest mb-1">-- MANUAL_IMPORT --</h2>
                     <p class="text-[10px] text-muted-foreground mb-4">
                         Load a VS Code theme JSON file or paste the JSON directly.
                     </p>
@@ -169,8 +168,12 @@
                 </div>
 
             @elseif($activeTab === 'general')
+                {{-- Breadcrumb --}}
+                <div class="text-[10px] text-muted-foreground mb-4 tracking-wide">~/settings/general</div>
+
                 {{-- ===== GENERAL TAB ===== --}}
-                <h1 class="text-xl font-bold text-foreground mb-6">General Settings</h1>
+                <h1 class="text-xl font-bold text-primary uppercase tracking-wider mb-1">General Settings</h1>
+                <p class="text-[10px] text-muted-foreground mb-6">Application configuration</p>
 
                 <div class="bg-card border border-border p-5">
                     <div class="flex items-center justify-center py-12 text-muted-foreground">
