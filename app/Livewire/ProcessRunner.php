@@ -39,19 +39,6 @@ class ProcessRunner extends Component
 
         $this->logs .= $clean;
 
-        $processLog = $this->command->processLog;
-
-        if ($processLog) {
-            $processLog->update([
-                'content' => $processLog->content.$clean,
-            ]);
-        } else {
-            $this->command->processLog()->create([
-                'content' => $clean,
-            ]);
-            $this->command->unsetRelation('processLog');
-        }
-
         $this->stream(
             content: $clean,
             replace: false,
@@ -79,10 +66,6 @@ class ProcessRunner extends Component
         $this->command->update(['status' => 'stopped']);
 
         $this->dispatch('process-status-changed');
-
-        Notification::title('Process Exited')
-            ->message("The process '{$this->command->name}' has exited (code: {$code}).")
-            ->show();
     }
 
     public function start(): void
