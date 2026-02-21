@@ -60,11 +60,11 @@
                 </div>
             </div>
 
-            <a href="/settings"
+            {{-- <a href="/settings"
                 class="flex items-center justify-between py-2 text-xs font-bold text-muted-foreground uppercase tracking-wider hover:text-primary transition-colors cursor-pointer">
                 <span>Settings</span>
                 <x-icon name="settings" class="w-3.5 h-3.5" />
-            </a>
+            </a> --}}
         </div>
     </aside>
 
@@ -75,7 +75,6 @@
         @else
             <div class="flex-1 flex items-center justify-center text-muted-foreground">
                 <div class="text-center flex flex-col items-center">
-                    <img src="/images/logo.png" alt="SIGNAL" class="w-24 h-24 opacity-10 mb-6 grayscale" />
                     <p class="text-lg font-black tracking-tighter text-foreground/30 italic">INITIALIZING SIGNAL...</p>
                     <p class="text-xs font-mono mt-2 uppercase tracking-widest">Select a command to begin monitoring</p>
                 </div>
