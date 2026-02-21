@@ -7,6 +7,7 @@ use Illuminate\Contracts\View\View;
 use Livewire\Attributes\On;
 use Livewire\Component;
 use Native\Desktop\Events\ChildProcess\MessageReceived;
+use Native\Desktop\Events\ChildProcess\ProcessExited;
 use Native\Desktop\Facades\ChildProcess;
 
 class ProcessRunner extends Component
@@ -18,26 +19,32 @@ class ProcessRunner extends Component
     #[On('native:'.MessageReceived::class)]
     public function onMessageReceived(string $data, string $alias): void
     {
-
         if ($alias !== $this->command->alias) {
             return;
         }
 
+        if ($this->command->status !== 'running') {
+            return;
+        }
+
+        $this->logs .= $data;
+
         $this->stream(
-            to: "logs-{$this->command->id}",
             content: $data,
-            replace: false
+            replace: false,
+            el: "logs-{$this->command->id}",
         );
     }
 
-    #[On('native:child-process.process-exited')]
-    public function onProcessExited(string $data): void
+    #[On('native:'.ProcessExited::class)]
+    public function onProcessExited(string $alias, int $code): void
     {
-        $data = json_decode($data, true);
-        if ($data['alias'] === $this->command->alias) {
-            $this->command->refresh();
-            $this->command->update(['status' => 'stopped']);
+        if ($alias !== $this->command->alias) {
+            return;
         }
+
+        $this->command->refresh();
+        $this->command->update(['status' => 'stopped']);
     }
 
     public function start(): void
@@ -46,7 +53,6 @@ class ProcessRunner extends Component
             cmd: $this->command->command,
             alias: $this->command->alias,
             cwd: $this->command->project->path,
-            persistent: true,
         );
 
         $this->command->update(['status' => 'running']);
@@ -54,8 +60,19 @@ class ProcessRunner extends Component
 
     public function stop(): void
     {
-        ChildProcess::stop($this->command->alias);
         $this->command->update(['status' => 'stopped']);
+
+        $alias = $this->command->alias;
+
+        ChildProcess::stop($alias);
+
+        // The process may have been restarted by the persistent watchdog
+        // before the stop command could disable it. Retry to ensure it's dead.
+        usleep(500_000);
+
+        if (ChildProcess::get($alias) !== null) {
+            ChildProcess::stop($alias);
+        }
     }
 
     public function clearLogs(): void
