@@ -17,7 +17,17 @@ class Command extends Model
         'command',
         'alias',
         'status',
+        'auto_start',
+        'auto_restart',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'auto_start' => 'boolean',
+            'auto_restart' => 'boolean',
+        ];
+    }
 
     public function project(): BelongsTo
     {

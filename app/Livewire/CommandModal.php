@@ -25,6 +25,10 @@ class CommandModal extends Component
     #[Validate('required|string|max:1000')]
     public string $commandText = '';
 
+    public bool $autoStart = false;
+
+    public bool $autoRestart = false;
+
     public function mount(bool $show = false, ?int $projectId = null): void
     {
         $this->show = $show;
@@ -34,13 +38,12 @@ class CommandModal extends Component
     #[On('open-command-modal')]
     public function openForCreate(int $projectId): void
     {
-        $this->reset(['name', 'commandText', 'editingCommandId']);
+        $this->reset(['name', 'commandText', 'editingCommandId', 'autoStart', 'autoRestart']);
         $this->projectId = $projectId;
         $this->resetErrorBag();
         $this->show = true;
     }
 
-    #[On('open-edit-command-modal')]
     public function openForEdit(int $commandId): void
     {
         $command = Command::findOrFail($commandId);
@@ -48,6 +51,8 @@ class CommandModal extends Component
         $this->projectId = $command->project_id;
         $this->name = $command->name;
         $this->commandText = $command->command;
+        $this->autoStart = $command->auto_start;
+        $this->autoRestart = $command->auto_restart;
         $this->resetErrorBag();
         $this->show = true;
     }
@@ -71,6 +76,8 @@ class CommandModal extends Component
             Command::findOrFail($this->editingCommandId)->update([
                 'name' => $this->name,
                 'command' => $this->commandText,
+                'auto_start' => $this->autoStart,
+                'auto_restart' => $this->autoRestart,
             ]);
         } else {
             $alias = Str::slug($this->name).'-'.uniqid();
@@ -81,6 +88,8 @@ class CommandModal extends Component
                 'command' => $this->commandText,
                 'alias' => $alias,
                 'status' => 'stopped',
+                'auto_start' => $this->autoStart,
+                'auto_restart' => $this->autoRestart,
             ]);
         }
 
@@ -112,7 +121,7 @@ class CommandModal extends Component
 
     public function cancel(): void
     {
-        $this->reset(['name', 'commandText', 'editingCommandId', 'projectId']);
+        $this->reset(['name', 'commandText', 'editingCommandId', 'projectId', 'autoStart', 'autoRestart']);
         $this->show = false;
         $this->dispatch('close-command-modal');
     }

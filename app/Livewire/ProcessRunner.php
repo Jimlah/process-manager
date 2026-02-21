@@ -8,8 +8,6 @@ use Livewire\Attributes\On;
 use Livewire\Component;
 use Native\Desktop\Events\ChildProcess\MessageReceived;
 use Native\Desktop\Events\ChildProcess\ProcessExited;
-use Native\Desktop\Facades\ChildProcess;
-use Native\Desktop\Facades\Notification;
 
 class ProcessRunner extends Component
 {
@@ -70,48 +68,14 @@ class ProcessRunner extends Component
 
     public function start(): void
     {
-        $this->command->processLog?->update(['content' => '']);
         $this->logs = '';
-
-        ChildProcess::start(
-            cmd: $this->command->command,
-            alias: $this->command->alias,
-            cwd: $this->command->project->path,
-            env: [],
-        );
-
-        $this->command->update(['status' => 'running']);
-
-        $this->dispatch('process-status-changed');
-
-        Notification::title('Process Started')
-            ->message("Started '{$this->command->name}' in {$this->command->project->name}.")
-            ->show();
+        \App\Events\CommandStartRequested::dispatch($this->command);
     }
 
     public function stop(): void
     {
-        $this->command->update(['status' => 'stopped']);
-
-        $this->dispatch('process-status-changed');
-
-        $alias = $this->command->alias;
-
-        ChildProcess::stop($alias);
-
-        $this->clearLogs();
-
-        // The process may have been restarted by the persistent watchdog
-        // before the stop command could disable it. Retry to ensure it's dead.
-        usleep(500_000);
-
-        if (ChildProcess::get($alias) !== null) {
-            ChildProcess::stop($alias);
-        }
-
-        Notification::title('Process Stopped')
-            ->message("Stopped '{$this->command->name}'.")
-            ->show();
+        $this->logs = '';
+        \App\Events\CommandStopRequested::dispatch($this->command);
     }
 
     public function clearLogs(): void

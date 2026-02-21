@@ -19,6 +19,10 @@ class NativeAppServiceProvider implements ProvidesPhpIni
             ->minWidth(1000)
             ->minHeight(600)
             ->title('SIGNAL');
+
+        \App\Models\Command::where('auto_start', true)->each(function ($command) {
+            \App\Events\CommandStartRequested::dispatch($command);
+        });
     }
 
     /**

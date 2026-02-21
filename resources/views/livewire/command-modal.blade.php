@@ -30,6 +30,28 @@
                     placeholder="npm run dev"></textarea>
                 @error('commandText')<span class="text-destructive text-xs mt-1 block">{{ $message }}</span>@enderror
             </div>
+
+            <div class="grid grid-cols-2 gap-4 pt-2">
+                <label class="flex items-center gap-2 cursor-pointer group">
+                    <input type="checkbox" wire:model="autoStart"
+                        class="w-4 h-4 rounded border-input bg-background text-primary focus:ring-primary">
+                    <div class="flex flex-col">
+                        <span
+                            class="text-xs font-bold uppercase tracking-wider text-muted-foreground group-hover:text-foreground transition-colors">Auto-Start</span>
+                        <span class="text-[10px] text-muted-foreground/60">Run on startup</span>
+                    </div>
+                </label>
+
+                <label class="flex items-center gap-2 cursor-pointer group">
+                    <input type="checkbox" wire:model="autoRestart"
+                        class="w-4 h-4 rounded border-input bg-background text-primary focus:ring-primary">
+                    <div class="flex flex-col">
+                        <span
+                            class="text-xs font-bold uppercase tracking-wider text-muted-foreground group-hover:text-foreground transition-colors">Auto-Restart</span>
+                        <span class="text-[10px] text-muted-foreground/60">Restart if exit</span>
+                    </div>
+                </label>
+            </div>
         </div>
 
         <div class="flex items-center justify-between mt-6 pt-4 border-t border-border">
