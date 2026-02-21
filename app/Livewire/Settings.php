@@ -98,7 +98,7 @@ class Settings extends Component
         $this->themeJson = '';
         $this->previewUrl = '';
         $this->importStatus = "Theme '{$name}' imported successfully!";
-        
+
         Notification::title('Theme Imported')
             ->message("The theme '{$name}' was successfully imported.")
             ->show();
