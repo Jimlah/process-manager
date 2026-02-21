@@ -47,9 +47,26 @@ class ProjectTree extends Component
         $this->dispatch('open-edit-project-modal', projectId: $this->project->id);
     }
 
+    public function deleteProject(): void
+    {
+        $this->project->delete();
+        $this->dispatch('project-deleted');
+    }
+
     public function editCommand(int $commandId): void
     {
         $this->dispatch('open-edit-command-modal', commandId: $commandId);
+    }
+
+    public function deleteCommand(int $commandId): void
+    {
+        $command = $this->project->commands->find($commandId);
+
+        if ($command) {
+            $command->delete();
+            $this->project->load('commands');
+            $this->dispatch('command-updated');
+        }
     }
 
     #[On('process-status-changed')]

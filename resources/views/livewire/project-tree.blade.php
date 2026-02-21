@@ -14,13 +14,18 @@
         </button>
 
         <div class="opacity-0 group-hover:opacity-100 flex items-center gap-0.5 shrink-0 mr-1 transition-all">
-            <button wire:click="editProject"
-                class="p-1 hover:bg-accent text-muted-foreground hover:text-foreground transition-all"
+            <button wire:click.stop="editProject"
+                class="p-1 hover:bg-accent text-muted-foreground hover:text-foreground md:rounded transition-all"
                 title="Edit Project">
                 <x-icon name="pencil" class="w-3.5 h-3.5" />
             </button>
-            <button wire:click="addCommand"
-                class="p-1 hover:bg-accent text-muted-foreground hover:text-foreground transition-all"
+            <button wire:click.stop="deleteProject"
+                class="p-1 hover:bg-destructive/20 text-muted-foreground hover:text-destructive md:rounded transition-all"
+                title="Delete Project" wire:confirm="Are you sure you want to delete this project?">
+                <x-icon name="trash" class="w-3.5 h-3.5" />
+            </button>
+            <button wire:click.stop="addCommand"
+                class="p-1 hover:bg-accent text-muted-foreground hover:text-foreground md:rounded transition-all"
                 title="Add Command">
                 <x-icon name="plus" class="w-3.5 h-3.5" />
             </button>
@@ -31,11 +36,10 @@
     @if($expanded)
         <div class="ml-3 mt-0.5 space-y-px border-l border-border pl-1">
             @foreach($project->commands as $command)
-                <div wire:key="cmd-{{ $command->id }}" class="flex items-center group/cmd">
+                <div wire:key="cmd-{{ $command->id }}" class="flex items-center group/cmd hover:bg-accent hover:text-foreground">
                     <button wire:click="selectCommand({{ $command->id }})"
                         class=" flex items-center gap-2 py-1 px-2 text-xs text-left transition-all border-l-2 min-w-0
-                                                                                                                                                                                                                                                                       {{ $selectedCommandId === $command->id
-                    ? 'border-primary bg-primary/10 text-primary font-bold' : 'border-transparent text-muted-foreground hover:bg-accent hover:text-foreground' }}">
+                                    {{ $selectedCommandId === $command->id ? 'border-primary bg-primary/10 text-primary font-bold' : 'border-transparent text-muted-foreground ' }}">
                         <span class="text-muted-foreground opacity-50 select-none mr-1">|--</span>
                         <span class="truncate flex-1 font-mono">{{ $command->name }}</span>
                     </button>
@@ -50,10 +54,18 @@
                             <x-icon name="play" class="w-3 h-3 text-muted-foreground" />
                         </button>
                     @endif
-                    <button wire:click.stop="editCommand({{ $command->id }})"
-                        class="opacity-100 p-1 bg-accent text-foreground transition-all shrink-0 mr-1" title="Edit Command">
-                        <x-icon name="pencil" class="w-3 h-3" />
-                    </button>
+                    <div class="opacity-0 group-hover/cmd:opacity-100 flex items-center gap-0.5 shrink-0 ml-1 mr-1 transition-all">
+                        <button wire:click.stop="editCommand({{ $command->id }})"
+                            class="p-1 hover:bg-accent text-muted-foreground hover:text-foreground rounded transition-all"
+                            title="Edit Command">
+                            <x-icon name="pencil" class="w-3 h-3" />
+                        </button>
+                        <button wire:click.stop="deleteCommand({{ $command->id }})"
+                            class="p-1 hover:bg-destructive/20 text-muted-foreground hover:text-destructive rounded transition-all"
+                            title="Delete Command" wire:confirm="Are you sure you want to delete this command?">
+                            <x-icon name="trash" class="w-3 h-3" />
+                        </button>
+                    </div>
                 </div>
             @endforeach
 
@@ -64,5 +76,4 @@
             @endif
         </div>
     @endif
-
 </div>
