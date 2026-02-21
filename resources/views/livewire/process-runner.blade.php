@@ -15,7 +15,8 @@
                     <span class="w-1.5 h-1.5 rounded-full bg-success"></span>
                     RUNNING
                 </x-badge>
-                <x-button variant="destructive" size="sm" wire:click="stop" wire:loading.attr="disabled" class="gap-1.5 px-3">
+                <x-button variant="destructive" size="sm" wire:click="stop" wire:loading.attr="disabled"
+                    class="gap-1.5 px-3">
                     <x-icon name="stop" class="w-3.5 h-3.5" />
                     STOP
                 </x-button>
@@ -42,9 +43,8 @@
     <!-- Terminal -->
     <div class="flex-1 bg-terminal overflow-hidden flex flex-col relative">
         <div class="flex-1 overflow-y-auto p-4 font-mono text-sm text-terminal-text whitespace-pre-wrap leading-relaxed focus:outline-none"
-             id="terminal-{{ $command->id }}"
-             wire:stream="logs-{{ $command->id }}">
-            {{ $logs }}
+            id="terminal-{{ $command->id }}" wire:stream="logs-{{ $command->id }}">
+            {!! $logs !!}
         </div>
     </div>
 </div>

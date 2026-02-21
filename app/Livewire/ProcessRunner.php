@@ -47,9 +47,8 @@ class ProcessRunner extends Component
     }
 
     private function convertAnsiToHtml(string $text): string
-    {
+    {  
         $converter = new \SensioLabs\AnsiConverter\AnsiToHtmlConverter();
-        
         return $converter->convert($text);
     }
 
