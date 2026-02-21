@@ -7,6 +7,7 @@ use Illuminate\Contracts\View\View;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
+use Native\Desktop\Facades\Notification;
 
 class ProjectModal extends Component
 {
@@ -54,7 +55,11 @@ class ProjectModal extends Component
     {
         $this->validate();
 
+        $name = $this->name;
+        $isEdit = false;
+
         if ($this->project) {
+            $isEdit = true;
             $this->project->update([
                 'name' => $this->name,
                 'path' => $this->path,
@@ -69,12 +74,21 @@ class ProjectModal extends Component
         $this->reset(['name', 'path', 'project']);
         $this->show = false;
         $this->dispatch('close-project-modal');
+
+        Notification::title($isEdit ? 'Project Updated' : 'Project Created')
+            ->message("The project '{$name}' has been successfully saved.")
+            ->show();
     }
 
     public function delete(): void
     {
         if ($this->project) {
+            $name = $this->project->name;
             $this->project->delete();
+
+            Notification::title('Project Deleted')
+                ->message("The project '{$name}' has been deleted.")
+                ->show();
         }
 
         $this->reset(['name', 'path', 'project']);

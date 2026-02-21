@@ -8,6 +8,7 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Support\Str;
 use Livewire\Component;
 use Native\Desktop\Dialog;
+use Native\Desktop\Facades\Notification;
 
 class Settings extends Component
 {
@@ -97,6 +98,10 @@ class Settings extends Component
         $this->themeJson = '';
         $this->previewUrl = '';
         $this->importStatus = "Theme '{$name}' imported successfully!";
+        
+        Notification::title('Theme Imported')
+            ->message("The theme '{$name}' was successfully imported.")
+            ->show();
 
         // Refresh page to apply CSS
         $this->redirect(route('settings'));
@@ -116,6 +121,10 @@ class Settings extends Component
         ThemeService::writeThemeFile();
 
         $this->importStatus = "Theme '{$theme->name}' activated!";
+
+        Notification::title('Theme Activated')
+            ->message("The theme '{$theme->name}' is now active.")
+            ->show();
 
         // Refresh page to apply CSS
         $this->redirect(route('settings'));
@@ -144,6 +153,10 @@ class Settings extends Component
         ThemeService::writeThemeFile();
 
         $this->importStatus = 'Theme deleted.';
+
+        Notification::title('Theme Deleted')
+            ->message("The theme '{$theme->name}' has been deleted.")
+            ->show();
 
         // Refresh page to apply CSS
         $this->redirect(route('settings'));

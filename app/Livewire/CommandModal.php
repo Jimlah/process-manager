@@ -9,6 +9,7 @@ use Illuminate\Support\Str;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
+use Native\Desktop\Facades\Notification;
 
 class CommandModal extends Component
 {
@@ -62,7 +63,11 @@ class CommandModal extends Component
     {
         $this->validate();
 
+        $name = $this->name;
+        $isEdit = false;
+
         if ($this->editingCommandId) {
+            $isEdit = true;
             Command::findOrFail($this->editingCommandId)->update([
                 'name' => $this->name,
                 'command' => $this->commandText,
@@ -82,12 +87,22 @@ class CommandModal extends Component
         $this->reset(['name', 'commandText', 'editingCommandId', 'projectId']);
         $this->show = false;
         $this->dispatch('close-command-modal');
+
+        Notification::title($isEdit ? 'Command Updated' : 'Command Created')
+            ->message("The command '{$name}' has been successfully saved.")
+            ->show();
     }
 
     public function delete(): void
     {
         if ($this->editingCommandId) {
-            Command::findOrFail($this->editingCommandId)->delete();
+            $command = Command::findOrFail($this->editingCommandId);
+            $name = $command->name;
+            $command->delete();
+
+            Notification::title('Command Deleted')
+                ->message("The command '{$name}' has been deleted.")
+                ->show();
         }
 
         $this->reset(['name', 'commandText', 'editingCommandId', 'projectId']);

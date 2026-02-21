@@ -9,6 +9,7 @@ use Livewire\Component;
 use Native\Desktop\Events\ChildProcess\MessageReceived;
 use Native\Desktop\Events\ChildProcess\ProcessExited;
 use Native\Desktop\Facades\ChildProcess;
+use Native\Desktop\Facades\Notification;
 
 class ProcessRunner extends Component
 {
@@ -78,6 +79,10 @@ class ProcessRunner extends Component
         $this->command->update(['status' => 'stopped']);
 
         $this->dispatch('process-status-changed');
+
+        Notification::title('Process Exited')
+            ->message("The process '{$this->command->name}' has exited (code: {$code}).")
+            ->show();
     }
 
     public function start(): void
@@ -95,6 +100,10 @@ class ProcessRunner extends Component
         $this->command->update(['status' => 'running']);
 
         $this->dispatch('process-status-changed');
+
+        Notification::title('Process Started')
+            ->message("Started '{$this->command->name}' in {$this->command->project->name}.")
+            ->show();
     }
 
     public function stop(): void
@@ -116,6 +125,10 @@ class ProcessRunner extends Component
         if (ChildProcess::get($alias) !== null) {
             ChildProcess::stop($alias);
         }
+
+        Notification::title('Process Stopped')
+            ->message("Stopped '{$this->command->name}'.")
+            ->show();
     }
 
     public function clearLogs(): void

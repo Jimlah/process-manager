@@ -6,6 +6,7 @@ use App\Services\ThemeService;
 use App\Services\VSCodeThemeService;
 use Illuminate\Contracts\View\View;
 use Livewire\Component;
+use Native\Desktop\Facades\Notification;
 
 class VSCodeThemeBrowser extends Component
 {
@@ -66,8 +67,16 @@ class VSCodeThemeBrowser extends Component
 
             $this->downloadStatus = "Theme '{$theme->name}' downloaded and activated!";
             $this->dispatch('theme-downloaded');
+
+            Notification::title('Theme Downloaded')
+                ->message("The theme '{$theme->name}' was successfully downloaded and activated.")
+                ->show();
         } catch (\Throwable $e) {
             $this->downloadStatus = "Download failed: {$e->getMessage()}";
+
+            Notification::title('Theme Download Failed')
+                ->message("Failed to download '{$themeName}'. Check settings page for error.")
+                ->show();
         } finally {
             $this->downloadingTheme = '';
         }
