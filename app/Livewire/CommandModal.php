@@ -44,6 +44,7 @@ class CommandModal extends Component
         $this->show = true;
     }
 
+    #[On('open-edit-command-modal')]
     public function openForEdit(int $commandId): void
     {
         $command = Command::findOrFail($commandId);
