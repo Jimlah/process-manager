@@ -1,68 +1,35 @@
 <div>
-    @if($show)
-        <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm" wire:click.self="cancel">
-            <div class="bg-gray-800 rounded-lg shadow-2xl border border-gray-700 w-full max-w-md mx-4">
-                <div class="p-6">
-                    <h2 class="text-xl font-semibold mb-4">
-                        {{ $project ? 'Edit Project' : 'New Project' }}
-                    </h2>
+    <x-modal :show="$show" :title="$project ? 'EDIT PROJECT' : 'NEW PROJECT'" wire:click.self="cancel">
+        <x-slot:close>
+            <button type="button" class="text-muted-foreground hover:text-foreground transition-colors" wire:click="cancel">
+                <x-icon name="plus" class="w-4 h-4 rotate-45" />
+            </button>
+        </x-slot:close>
 
-                    <div class="space-y-4">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-400 mb-1">Project Name</label>
-                            <input
-                                type="text"
-                                wire:model="name"
-                                class="w-full px-3 py-2 bg-gray-900 border border-gray-700 rounded focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-                                placeholder="e.g., eClinic"
-                            />
-                            @error('name')
-                                <span class="text-red-400 text-sm mt-1">{{ $message }}</span>
-                            @enderror
-                        </div>
+        <div class="space-y-4">
+            <div>
+                <label class="block text-xs font-bold text-muted-foreground mb-1 uppercase tracking-wider">Project Name</label>
+                <x-input wire:model="name" placeholder="e.g., eClinic" />
+                @error('name')<span class="text-destructive text-xs mt-1 block">{{ $message }}</span>@enderror
+            </div>
 
-                        <div>
-                            <label class="block text-sm font-medium text-gray-400 mb-1">Project Path</label>
-                            <input
-                                type="text"
-                                wire:model="path"
-                                class="w-full px-3 py-2 bg-gray-900 border border-gray-700 rounded focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 font-mono text-sm"
-                                placeholder="/Users/{{ get_current_user() }}/Projects/eclinic"
-                            />
-                            @error('path')
-                                <span class="text-red-400 text-sm mt-1">{{ $message }}</span>
-                            @enderror
-                        </div>
-                    </div>
-
-                    <div class="flex items-center justify-end gap-3 mt-6">
-                        @if($project)
-                            <button
-                                wire:click="delete"
-                                class="px-4 py-2 text-red-400 hover:text-red-300 hover:bg-red-900/20 rounded text-sm font-medium transition-colors"
-                            >
-                                Delete
-                            </button>
-                        @endif
-
-                        <div class="flex-1"></div>
-
-                        <button
-                            wire:click="cancel"
-                            class="px-4 py-2 text-gray-400 hover:text-white hover:bg-gray-700 rounded text-sm font-medium transition-colors"
-                        >
-                            Cancel
-                        </button>
-
-                        <button
-                            wire:click="save"
-                            class="px-4 py-2 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 rounded text-sm font-medium transition-colors"
-                        >
-                            {{ $project ? 'Update' : 'Create' }}
-                        </button>
-                    </div>
-                </div>
+            <div>
+                <label class="block text-xs font-bold text-muted-foreground mb-1 uppercase tracking-wider">Project Path</label>
+                <x-input wire:model="path" placeholder="/Users/{{ get_current_user() }}/Projects/eclinic" />
+                @error('path')<span class="text-destructive text-xs mt-1 block">{{ $message }}</span>@enderror
             </div>
         </div>
-    @endif
+
+        <div class="flex items-center justify-between mt-6 pt-4 border-t border-border">
+            <div>
+                @if($project)
+                    <x-button variant="destructive" wire:click="delete">Delete</x-button>
+                @endif
+            </div>
+            <div class="flex items-center gap-3">
+                <x-button variant="ghost" wire:click="cancel">Cancel</x-button>
+                <x-button wire:click="save">{{ $project ? 'Update' : 'Create' }}</x-button>
+            </div>
+        </div>
+    </x-modal>
 </div>

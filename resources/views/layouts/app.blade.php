@@ -6,7 +6,7 @@
     <title>Dev Process Manager</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="bg-gray-900 text-gray-100 h-screen overflow-hidden antialiased">
+<body class="bg-background text-foreground h-screen w-screen overflow-hidden flex font-sans antialiased selection:bg-primary/30">
     {{ $slot }}
 </body>
 </html>

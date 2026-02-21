@@ -4,5 +4,57 @@
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 
 @theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+    --color-background: #1e1e2e;
+    --color-foreground: #cdd6f4;
+    --color-card: #181825;
+    --color-card-foreground: #cdd6f4;
+    --color-popover: #181825;
+    --color-popover-foreground: #cdd6f4;
+    --color-primary: #cba6f7;
+    --color-primary-foreground: #11111b;
+    --color-secondary: #313244;
+    --color-secondary-foreground: #cdd6f4;
+    --color-muted: #45475a;
+    --color-muted-foreground: #a6adc8;
+    --color-accent: #313244;
+    --color-accent-foreground: #cdd6f4;
+    --color-destructive: #f38ba8;
+    --color-destructive-foreground: #11111b;
+    --color-success: #a6e3a1;
+    --color-success-foreground: #11111b;
+    --color-border: #313244;
+    --color-input: #313244;
+    --color-ring: #cba6f7;
+
+    --font-sans: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    --radius: 0px;
+}
+
+@layer base {
+    * {
+        @apply border-border outline-ring/50;
+    }
+    body {
+        @apply bg-background text-foreground font-sans antialiased selection:bg-primary/30;
+    }
+
+    /* Custom Scrollbar for Terminal feel */
+    ::-webkit-scrollbar {
+        width: 10px;
+        height: 10px;
+    }
+    ::-webkit-scrollbar-track {
+        background: var(--color-background);
+        border-left: 1px solid var(--color-border);
+    }
+    ::-webkit-scrollbar-thumb {
+        background: var(--color-muted);
+        border: 1px solid var(--color-background);
+    }
+    ::-webkit-scrollbar-thumb:hover {
+        background: var(--color-accent);
+    }
+    ::-webkit-scrollbar-corner {
+        background: var(--color-background);
+    }
 }
