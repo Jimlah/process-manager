@@ -101,6 +101,8 @@ class ProcessRunner extends Component
 
         ChildProcess::stop($alias);
 
+        $this->clearLogs();
+
         // The process may have been restarted by the persistent watchdog
         // before the stop command could disable it. Retry to ensure it's dead.
         usleep(500_000);
