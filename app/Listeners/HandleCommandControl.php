@@ -39,6 +39,8 @@ class HandleCommandControl
         Notification::title('Process Started')
             ->message("Started '{$command->name}' in {$command->project->name}.")
             ->show();
+
+        \App\Events\ProcessStatusChanged::dispatch($command);
     }
 
     protected function handleStop(CommandStopRequested $event): void
@@ -60,5 +62,7 @@ class HandleCommandControl
         Notification::title('Process Stopped')
             ->message("Stopped '{$command->name}'.")
             ->show();
+
+        \App\Events\ProcessStatusChanged::dispatch($command);
     }
 }

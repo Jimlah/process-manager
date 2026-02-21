@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Events\ProcessStatusChanged;
 use App\Models\Command;
 use Illuminate\Contracts\View\View;
 use Livewire\Attributes\On;
@@ -70,12 +71,28 @@ class ProcessRunner extends Component
     {
         $this->logs = '';
         \App\Events\CommandStartRequested::dispatch($this->command);
+        $this->command->refresh();
     }
 
     public function stop(): void
     {
         $this->logs = '';
         \App\Events\CommandStopRequested::dispatch($this->command);
+        $this->command->refresh();
+    }
+
+    #[On('native:'.ProcessStatusChanged::class)]
+    public function onProcessStatusChanged(array $command): void
+    {
+        if ($command['id'] === $this->command->id) {
+            $this->command->refresh();
+        }
+    }
+
+    #[On('process-status-changed')]
+    public function refreshCommand(): void
+    {
+        $this->command->refresh();
     }
 
     public function clearLogs(): void

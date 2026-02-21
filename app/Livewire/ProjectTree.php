@@ -2,12 +2,14 @@
 
 namespace App\Livewire;
 
+use App\Events\CommandStartRequested;
+use App\Events\CommandStopRequested;
+use App\Events\ProcessStatusChanged;
 use App\Models\Command;
 use App\Models\Project;
 use Illuminate\Contracts\View\View;
 use Livewire\Attributes\On;
 use Livewire\Component;
-use Native\Desktop\Facades\ChildProcess;
 
 class ProjectTree extends Component
 {
@@ -69,6 +71,7 @@ class ProjectTree extends Component
         }
     }
 
+    #[On('native:'.ProcessStatusChanged::class)]
     #[On('process-status-changed')]
     public function refreshCommands(): void
     {
@@ -83,18 +86,7 @@ class ProjectTree extends Component
             return;
         }
 
-        $command->processLog?->update(['content' => '']);
-
-        ChildProcess::start(
-            cmd: $command->command,
-            alias: $command->alias,
-            cwd: $command->project->path,
-            env: [],
-        );
-
-        $command->update(['status' => 'running']);
-
-        $this->dispatch('process-status-changed');
+        CommandStartRequested::dispatch($command);
     }
 
     public function stopCommand(int $commandId): void
@@ -105,11 +97,7 @@ class ProjectTree extends Component
             return;
         }
 
-        $command->update(['status' => 'stopped']);
-
-        ChildProcess::stop($command->alias);
-
-        $this->dispatch('process-status-changed');
+        CommandStopRequested::dispatch($command);
     }
 
     public function getRunningCountProperty(): int

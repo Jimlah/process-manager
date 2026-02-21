@@ -8,7 +8,7 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class CommandStopRequested implements ShouldBroadcastNow
+class ProcessStatusChanged implements ShouldBroadcastNow
 {
     use Dispatchable, SerializesModels;
 

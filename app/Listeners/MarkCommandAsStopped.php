@@ -22,6 +22,8 @@ class MarkCommandAsStopped
                 ->message("The process '{$command->name}' has exited (code: {$event->code}).")
                 ->show();
 
+            \App\Events\ProcessStatusChanged::dispatch($command);
+
             if ($command->auto_restart) {
                 \App\Events\CommandStartRequested::dispatch($command);
             }
