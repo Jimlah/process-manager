@@ -11,6 +11,8 @@ use Native\Desktop\Dialog;
 
 class Settings extends Component
 {
+    public string $activeTab = 'themes';
+
     public string $themeJson = '';
 
     public ?int $selectedThemeId = null;
@@ -18,6 +20,8 @@ class Settings extends Component
     public string $importStatus = '';
 
     public string $previewUrl = '';
+
+    protected $listeners = ['theme-downloaded' => 'refreshThemes'];
 
     public function mount(): void
     {
@@ -143,6 +147,16 @@ class Settings extends Component
 
         // Refresh page to apply CSS
         $this->redirect(route('settings'));
+    }
+
+    public function setTab(string $tab): void
+    {
+        $this->activeTab = $tab;
+    }
+
+    public function refreshThemes(): void
+    {
+        $this->selectedThemeId = Theme::getActive()?->id;
     }
 
     public function render(): View

@@ -66,6 +66,68 @@ class VSCodeThemeService
     }
 
     /**
+     * Search themes via vscodethemes.com API
+     *
+     * @return array{total: int, extensions: array<int, array{name: string, displayName: string, publisherName: string, shortDescription: string, themes: array, totalThemes: int}>}
+     */
+    public function searchVSCodeThemes(string $query = '', int $page = 1, int $pageSize = 36): array
+    {
+        $params = [
+            '_data' => 'routes/_index',
+            'language' => 'js',
+            'extensionsPageNumber' => $page,
+            'extensionsPageSize' => $pageSize,
+            'themesPageNumber' => 1,
+            'themesPageSize' => 10,
+            'sortBy' => 'installs',
+        ];
+
+        if ($query !== '') {
+            $params['text'] = $query;
+        }
+
+        $response = Http::get('https://vscodethemes.com/', $params);
+
+        if (! $response->successful()) {
+            throw new \RuntimeException('Failed to search vscodethemes.com: '.$response->body());
+        }
+
+        $data = $response->json();
+
+        return [
+            'total' => $data['results']['total'] ?? 0,
+            'extensions' => $data['results']['extensions'] ?? [],
+        ];
+    }
+
+    /**
+     * Get detailed theme data from vscodethemes.com
+     *
+     * @return array{name: string, displayName: string, publisherName: string, theme: array}
+     */
+    public function getExtensionThemeDetail(string $publisherName, string $extensionName, string $themeName): array
+    {
+        $slug = "{$publisherName}.{$extensionName}";
+
+        $response = Http::get("https://vscodethemes.com/e/{$slug}/{$themeName}", [
+            '_data' => 'routes/e.$slug.$theme',
+        ]);
+
+        if (! $response->successful()) {
+            throw new \RuntimeException('Failed to get theme detail: '.$response->body());
+        }
+
+        $data = $response->json();
+        $extension = $data['results']['extensions'][0] ?? null;
+
+        if (! $extension) {
+            throw new \RuntimeException('Theme extension not found');
+        }
+
+        return $extension;
+    }
+
+    /**
      * Download and import all popular themes
      *
      * @return array<int, array{success: bool, theme: string, message: string}>
