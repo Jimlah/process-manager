@@ -18,7 +18,9 @@ class ProcessRunner extends Component
 
     public function mount(): void
     {
-        $this->logs = $this->command->processLog?->content ?? '';
+        $this->logs = $this->stripAnsiCodes(
+            $this->command->processLog?->content ?? ''
+        );
     }
 
     #[On('native:'.MessageReceived::class)]
@@ -32,26 +34,37 @@ class ProcessRunner extends Component
             return;
         }
 
-        $this->logs .= $data;
+        $clean = $this->stripAnsiCodes($data);
+
+        $this->logs .= $clean;
 
         $processLog = $this->command->processLog;
 
         if ($processLog) {
             $processLog->update([
-                'content' => $processLog->content.$data,
+                'content' => $processLog->content.$clean,
             ]);
         } else {
             $this->command->processLog()->create([
-                'content' => $data,
+                'content' => $clean,
             ]);
             $this->command->unsetRelation('processLog');
         }
 
         $this->stream(
-            content: $data,
+            content: $clean,
             replace: false,
             el: "logs-{$this->command->id}",
         );
+    }
+
+    private function stripAnsiCodes(string $text): string
+    {
+        // Strip CSI sequences (colors, cursor, erase) and OSC sequences (terminal titles)
+        return preg_replace([
+            '/\e\[[0-9;]*[A-Za-z]/',
+            '/\e\][^\a]*(?:\a|\e\\\\)/',
+        ], '', $text);
     }
 
     #[On('native:'.ProcessExited::class)]
