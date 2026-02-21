@@ -16,6 +16,11 @@ class ProcessRunner extends Component
 
     public string $logs = '';
 
+    public function mount(): void
+    {
+        $this->logs = $this->command->processLog?->content ?? '';
+    }
+
     #[On('native:'.MessageReceived::class)]
     public function onMessageReceived(string $data, string $alias): void
     {
@@ -28,6 +33,19 @@ class ProcessRunner extends Component
         }
 
         $this->logs .= $data;
+
+        $processLog = $this->command->processLog;
+
+        if ($processLog) {
+            $processLog->update([
+                'content' => $processLog->content.$data,
+            ]);
+        } else {
+            $this->command->processLog()->create([
+                'content' => $data,
+            ]);
+            $this->command->unsetRelation('processLog');
+        }
 
         $this->stream(
             content: $data,
@@ -49,10 +67,14 @@ class ProcessRunner extends Component
 
     public function start(): void
     {
+        $this->command->processLog?->update(['content' => '']);
+        $this->logs = '';
+
         ChildProcess::start(
             cmd: $this->command->command,
             alias: $this->command->alias,
             cwd: $this->command->project->path,
+            env: [],
         );
 
         $this->command->update(['status' => 'running']);
@@ -78,6 +100,7 @@ class ProcessRunner extends Component
     public function clearLogs(): void
     {
         $this->logs = '';
+        $this->command->processLog?->update(['content' => '']);
     }
 
     public function render(): View
